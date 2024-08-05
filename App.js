@@ -1,9 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
-import Boton from "./componente/Boton";
-import Login from './pantallas/Login';
-import Register from './pantallas/Register';
+import Login from './pantallas/login';
+import Register from './pantallas/register';
 import { NavigationContainer } from '@react-navigation/native';
 import  {createStackNavigator} from '@react-navigation/stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
