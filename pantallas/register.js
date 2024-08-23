@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import Boton from "../componente/Boton";
 import {useNavigation}from '@react-navigation/native';
 
 function Register() {
