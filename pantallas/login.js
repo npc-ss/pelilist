@@ -19,7 +19,6 @@ function Login() {
                 placeholder="contraseña"
             />
             <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
-            <Boton></Boton>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.olvidarcont}>No tengo una cuenta</Text></TouchableOpacity>
         </View>

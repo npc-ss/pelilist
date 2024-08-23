@@ -27,7 +27,6 @@ function Register() {
         style={styles.TextInput}   
         placeholder="confirmar contraseña"      
       />
-      <Boton></Boton>
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.olvidarcont}>Ya tengo una cuenta</Text></TouchableOpacity>
       <StatusBar style="auto"/>
