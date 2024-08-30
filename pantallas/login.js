@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import Boton from "../componente/Boton";
 import {useNavigation}from '@react-navigation/native';
 
@@ -8,50 +8,73 @@ function Login() {
     const navigation= useNavigation();
     return (
         <View style={styles.container}>
-            <Text style={styles.titulo}>Inicia sesión</Text>
-            <Text style={styles.subtitulo}>ingresa a tu cuenta</Text>
+            <Image style={styles.image} source={require('../assets/Logologin.png')} />
+            <Text style={styles.titulo}>Wubi</Text>
+            <Text style={styles.subtitulo}>Inicia sesión</Text>
             <TextInput
-                placeholder="email o usuario"
+                placeholder="Enter Gmail"
                 style={styles.TextInput}
+                placeholderTextColor="#F0DAAE" 
             />
             <TextInput
                 style={styles.TextInput}
-                placeholder="contraseña"
+                placeholder="Enter Password"
+                placeholderTextColor="#F0DAAE" 
             />
+            <Boton></Boton>
             <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.olvidarcont}>No tengo una cuenta</Text></TouchableOpacity>
+                <Text style={styles.registerText}>Don't have an account? Sign in</Text>
+            </TouchableOpacity>
         </View>
     );
 }
+
 export default Login;
+
 const styles = StyleSheet.create({
+
+    //<Image style={styles.image} source={require('../assets/loco.jpeg')} />
+
     container: {
         flex: 1,
-        backgroundColor: '#f1f1f1',
+        backgroundColor: '#A3966A',
         alignItems: 'center',
         justifyContent: 'center',
     },
     titulo: {
-        fontSize: 60,
-        color: '#000',
+        fontSize: 40,
+        color: '#482E1D',
         fontWeight: 'bold',
     },
     subtitulo: {
-        fontSize: 30,
-        color: 'pink',
+        fontSize: 20,
+        color: '#F0DAAE',
+        marginBottom: 20,
     },
     TextInput: {
-        borderWidth: 1,
-        borderColor: 'pink',
-        width: '70%',
+        borderBottomWidth: 6,
+        fontSize: 18,
+        borderColor: '#F0DAAE',
+        width: '80%',
         height: 50,
         padding: 10,
         marginTop: 20,
-        borderRadius: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#A3966A',
+        color: '#F0DAAE',
     },
     olvidarcont: {
         marginTop: 10,
+        color: '#90553C',
+        fontWeight: 'bold',
+    },
+    registerText: {
+        marginTop: 10,
+        color: '#90553C',
+        fontWeight: 'bold',
+    },
+    image: {
+        height: 500,
+        width: 500,
     }
 });

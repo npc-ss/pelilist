@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native-web";
+import { TouchableOpacity } from 'react-native'; // Cambiar 'react-native-web' por 'react-native'
 import React from "react";
 import { StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,13 +7,12 @@ export default function Boton() {
     return (
         <TouchableOpacity style={styles.container}>
             <LinearGradient
-                // Button Linear Gradient
-                colors={['pink', 'white']}
+                colors={['#482E1D', '#482E1D']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.button}
             >
-                <Text style={styles.text}>Ingresar</Text>
+                <Text style={styles.text}>Sign in</Text>
             </LinearGradient>
         </TouchableOpacity>
     )
@@ -22,22 +21,22 @@ export default function Boton() {
 const styles = StyleSheet.create({
     container:{
         alignItems: 'center',
-        width: 200,
-        marginTop: 50,
+        width: 360,
+        marginTop: 30,
     },
     text:{
-        fonSize: 14,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 22,
+        color: '#F0DAAE',
+        
     },
     button: {
         width: '60%',
-        height: 40,
-        borderRadius: 20,
+        height: 60,
+        borderRadius: 50,
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: 'black',
+        borderBottomWidth: 3,
+        borderBottomColor: '#F0DAAE'
     },
 });
