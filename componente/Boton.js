@@ -3,17 +3,20 @@ import React from "react";
 import { StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import Login from "../pantallas/Login";
+import Register from "../pantallas/Register";
 
-export default function Boton() {
+export default function Boton({onPress}) {
+    
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress= {onPress}>
             <LinearGradient
                 colors={['#482E1D', '#482E1D']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.button}
             >
-                <Text style={styles.text}>Done</Text>
+                <Text style={styles.text}>Hecho</Text>
             </LinearGradient>
         </TouchableOpacity>
     )

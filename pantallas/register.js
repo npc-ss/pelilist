@@ -17,20 +17,22 @@ function Register() {
       />
       <TextInput 
 
-        placeholder="Username"  
+        placeholder="Usuario"  
         style={styles.TextInput}    
       />
       <TextInput 
         style={styles.TextInput}   
-        placeholder="Password"      
+        placeholder="Contraseña"      
       />
       <TextInput 
         style={styles.TextInput}   
-        placeholder="Confirm Password"      
+        placeholder="Confirmar contraseña"      
       />
-      <Boton></Boton>
+      <Boton onPress={() => navigation.navigate('Login')}></Boton>
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.olvidarcont}>Already have an account? Sign in</Text></TouchableOpacity>
+      
+        <Text style={styles.olvidarcont}>¿Ya tenés una cuenta? Inicia Sesión</Text>
+      </TouchableOpacity>
       <StatusBar style="auto"/>
     </View>
   );

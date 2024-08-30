@@ -10,21 +10,21 @@ function Login() {
         <View style={styles.container}>
             <Image style={styles.image} source={require('../assets/Logologin.png')} />
             <Text style={styles.titulo}>Wubi</Text>
-            <Text style={styles.subtitulo}>Inicia sesión</Text>
+            <Text style={styles.subtitulo}>Iniciar sesión</Text>
             <TextInput
-                placeholder="Enter Gmail"
+                placeholder="Email"
                 style={styles.TextInput}
                 placeholderTextColor="#F0DAAE" 
             />
             <TextInput
                 style={styles.TextInput}
-                placeholder="Enter Password"
+                placeholder="Contraseña"
                 placeholderTextColor="#F0DAAE" 
             />
-            <Boton></Boton>
+            <Boton onPress={() => navigation.navigate('Home')}> </Boton>
             <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.registerText}>Don't have an account? Sign in</Text>
+                <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
             </TouchableOpacity>
         </View>
     );
