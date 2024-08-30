@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import Boton from "../componente/Boton";
 import {useNavigation}from '@react-navigation/native';
 
@@ -8,27 +8,29 @@ function Register() {
   const navigation= useNavigation();
   return (
     <View style={styles.container}>
+      <Image style={styles.image} source={require('../assets/Logologin.png')} />
       <Text style={styles.titulo}>Registrarse</Text>
       <Text style={styles.subtitulo}>Crea una cuenta</Text>
       <TextInput 
-        placeholder="tu nombre de usuario"  
+        placeholder="Email"  
         style={styles.TextInput}    
       />
       <TextInput 
 
-        placeholder="email@gmail.com"  
+        placeholder="Username"  
         style={styles.TextInput}    
       />
       <TextInput 
         style={styles.TextInput}   
-        placeholder="contraseña"      
+        placeholder="Password"      
       />
       <TextInput 
         style={styles.TextInput}   
-        placeholder="confirmar contraseña"      
+        placeholder="Confirm Password"      
       />
+      <Boton></Boton>
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.olvidarcont}>Ya tengo una cuenta</Text></TouchableOpacity>
+        <Text style={styles.olvidarcont}>Already have an account? Sign in</Text></TouchableOpacity>
       <StatusBar style="auto"/>
     </View>
   );
@@ -37,31 +39,44 @@ export default Register;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f1f1f1',
-    alignItems: 'center',
-    justifyContent: 'center',
+      flex: 1,
+      backgroundColor: '#A3966A',
+      alignItems: 'center',
+      justifyContent: 'center',
   },
   titulo: {
-    fontSize: 60,
-    color: '#000',
-    fontWeight: 'bold',
+      fontSize: 40,
+      color: '#482E1D',
+      fontWeight: 'bold',
   },
   subtitulo: {
-    fontSize: 30,
-    color: 'pink',
+      fontSize: 20,
+      color: '#F0DAAE',
+      marginBottom: 20,
   },
   TextInput: {
-    borderWidth: 1,
-    borderColor: 'pink',
-    width: '70%',
-    height: 50,
-    padding: 10,
-    marginTop: 20,
-    borderRadius: 20,
-    backgroundColor: '#fff',
+      borderBottomWidth: 6,
+      fontSize: 18,
+      borderColor: '#F0DAAE',
+      width: '80%',
+      height: 50,
+      padding: 10,
+      marginTop: 20,
+      backgroundColor: '#A3966A',
+      color: '#F0DAAE',
   },
-  olvidarcont:{
-    marginTop: 10,
+  olvidarcont: {
+      marginTop: 10,
+      color: '#90553C',
+      fontWeight: 'bold',
+  },
+  registerText: {
+      marginTop: 10,
+      color: '#90553C',
+      fontWeight: 'bold',
+  },
+  image: {
+      height: 200,
+      width: 200,
   }
 });

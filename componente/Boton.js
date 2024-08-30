@@ -2,6 +2,7 @@ import { TouchableOpacity } from 'react-native'; // Cambiar 'react-native-web' p
 import React from "react";
 import { StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Boton() {
     return (
@@ -12,7 +13,7 @@ export default function Boton() {
                 end={{ x: 1, y: 1 }}
                 style={styles.button}
             >
-                <Text style={styles.text}>Sign in</Text>
+                <Text style={styles.text}>Done</Text>
             </LinearGradient>
         </TouchableOpacity>
     )
