@@ -3,12 +3,17 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Boton from "../componente/Boton";
 import {useNavigation}from '@react-navigation/native';
+import FormSearch from "../componente/FormSearch"
+
+//https://www.omdbapi.com/?apikey=20c177b7&s=troya
+//https://www.omdbapi.com/?apikey=20c177b7&i=tt0337341
 
 function Home (){
     const navigation= useNavigation();
     return (
     <View style={styles.container}>
-        <Text>akjsn</Text>
+        <Text style={styles.titulo}>Wubi</Text>
+
     </View>
     );
 }
