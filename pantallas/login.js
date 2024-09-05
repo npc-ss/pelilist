@@ -1,50 +1,66 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import Boton from "../componente/Boton";
-import {useNavigation}from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+
+const backgroundImage = require('../assets/Fondo.jpg');
+const logoImage = require('../assets/Logologin.png'); // Ruta correcta a la imagen del logo
 
 function Login() {
-    const navigation= useNavigation();
+    const navigation = useNavigation();
     return (
-        <View style={styles.container}>
-            <Image style={styles.image} source={require('../assets/Logologin.png')} />
-            <Text style={styles.titulo}>Wubi</Text>
-            <Text style={styles.subtitulo}>Iniciar sesión</Text>
-            <TextInput
-                placeholder="Email"
-                style={styles.TextInput}
-                placeholderTextColor="#F0DAAE" 
-            />
-            <TextInput
-                style={styles.TextInput}
-                placeholder="Contraseña"
-                placeholderTextColor="#F0DAAE" 
-            />
-            <Boton onPress={() => navigation.navigate('Preferencias')}> </Boton>
-            <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
-            </TouchableOpacity>
-        </View>
+        <ImageBackground source={backgroundImage} style={styles.container}>
+            <View style={styles.overlay}>
+                <Image style={styles.image} source={logoImage} />
+                
+                <View style={styles.searchSection}>
+                    <Image style={styles.searchIcon} source={logoImage} />
+                    <TextInput
+                        placeholder="Email"
+                        style={styles.input}
+                        placeholderTextColor="#F0DAAE"
+                    />
+                </View>
+
+                <View style={styles.searchSection}>
+                    <Image style={styles.searchIcon} source={logoImage} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Contraseña"
+                        placeholderTextColor="#F0DAAE"
+                    />
+                </View>
+                
+                <Boton onPress={() => navigation.navigate('Preferencias')} />
+                <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                    <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
     );
 }
 
 export default Login;
 
 const styles = StyleSheet.create({
-
-    //<Image style={styles.image} source={require('../assets/loco.jpeg')} />
-
     container: {
         flex: 1,
-        backgroundColor: '#A3966A',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0)'
     },
     titulo: {
         fontSize: 40,
-        color: '#482E1D',
+        color: '#F0DAAE',
         fontWeight: 'bold',
     },
     subtitulo: {
@@ -52,15 +68,15 @@ const styles = StyleSheet.create({
         color: '#F0DAAE',
         marginBottom: 20,
     },
-    TextInput: {
+    input: {
         borderBottomWidth: 6,
         fontSize: 18,
         borderColor: '#F0DAAE',
-        width: '80%',
+        width: '70%',
         height: 50,
         padding: 10,
         marginTop: 20,
-        backgroundColor: '#A3966A',
+        backgroundColor: '#aba073',
         color: '#F0DAAE',
     },
     olvidarcont: {
@@ -76,5 +92,14 @@ const styles = StyleSheet.create({
     image: {
         height: 200,
         width: 200,
-    }
+    },
+    searchSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    searchIcon: {
+        width: 50,
+        height: 50,
+    },
 });
