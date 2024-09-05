@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import Boton from "../componente/Boton";
+import { useNavigation } from '@react-navigation/native';
 
 function Preferencias (){
+    const navigation = useNavigation();
+
     const goToHomeTab = () => {
         // Navega a MainTabs y selecciona la pestaña "Home"
         navigation.navigate('MainTabs', { screen: 'Home' });
@@ -10,6 +13,7 @@ function Preferencias (){
     return (
     <View style={styles.container}>
         <Text style={styles.titulo}>Wubi</Text>
+        <Text style={styles.titulo}>Preferencias</Text>
         <Boton onPress={goToHomeTab}> </Boton>
     </View>
     );
