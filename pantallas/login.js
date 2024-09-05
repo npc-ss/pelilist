@@ -5,17 +5,19 @@ import Boton from "../componente/Boton";
 import { useNavigation } from '@react-navigation/native';
 
 const backgroundImage = require('../assets/Fondo.jpg');
-const logoImage = require('../assets/Logologin.png'); // Ruta correcta a la imagen del logo
+const logoImage = require('../assets/sobre.png'); 
+const wubiLogo = require('../assets/Wubi_logo3.png');
+const candadoImage = require('../assets/candado.png');
 
 function Login() {
     const navigation = useNavigation();
     return (
         <ImageBackground source={backgroundImage} style={styles.container}>
             <View style={styles.overlay}>
-                <Image style={styles.image} source={logoImage} />
+                <Image style={styles.image} source={wubiLogo} />
                 
                 <View style={styles.searchSection}>
-                    <Image style={styles.searchIcon} source={logoImage} />
+                    <Image style={styles.iconInsideInput} source={logoImage} />
                     <TextInput
                         placeholder="Email"
                         style={styles.input}
@@ -24,7 +26,7 @@ function Login() {
                 </View>
 
                 <View style={styles.searchSection}>
-                    <Image style={styles.searchIcon} source={logoImage} />
+                    <Image style={styles.iconInsideInput2} source={candadoImage} />
                     <TextInput
                         style={styles.input}
                         placeholder="Contraseña"
@@ -33,7 +35,7 @@ function Login() {
                 </View>
                 
                 <Boton onPress={() => navigation.navigate('Preferencias')} />
-                <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
+                <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                     <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
                 </TouchableOpacity>
@@ -56,50 +58,52 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0)'
-    },
-    titulo: {
-        fontSize: 40,
-        color: '#F0DAAE',
-        fontWeight: 'bold',
-    },
-    subtitulo: {
-        fontSize: 20,
-        color: '#F0DAAE',
-        marginBottom: 20,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
     },
     input: {
-        borderBottomWidth: 6,
+        borderBottomWidth: 5,
         fontSize: 18,
         borderColor: '#F0DAAE',
         width: '70%',
-        height: 50,
-        padding: 10,
-        marginTop: 20,
+        height: 38,
         backgroundColor: '#aba073',
         color: '#F0DAAE',
-    },
-    olvidarcont: {
-        marginTop: 10,
-        color: '#90553C',
-        fontWeight: 'bold',
+        marginVertical: 10, 
+        paddingLeft: 40, // Espacio para el ícono dentro del input
     },
     registerText: {
-        marginTop: 10,
+        marginTop: 8,
         color: '#90553C',
         fontWeight: 'bold',
     },
     image: {
-        height: 200,
-        width: 200,
+        marginBottom: 10,
+        height: 300,  
+        width: 300,   
+        resizeMode: 'contain',
     },
     searchSection: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 10, 
+        position: 'relative', 
     },
-    searchIcon: {
-        width: 50,
-        height: 50,
+    iconInsideInput: {
+        position: 'absolute', 
+        bottom: 10,
+        left: -4,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        zIndex: 1,
+    },
+    iconInsideInput2: {
+        position: 'absolute', 
+        bottom: 14,
+        left: -6,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        zIndex: 1,
     },
 });
