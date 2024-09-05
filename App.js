@@ -1,29 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import Boton from "./componente/Boton";
 import Login from './pantallas/Login';
 import Register from './pantallas/Register';
-import Home from './pantallas/Home';
 import Preferencias from './pantallas/Preferencias';
+import Home from './pantallastab/Home';
+import Perfil from './pantallastab/Perfil';
 import { NavigationContainer } from '@react-navigation/native';
-import  {createStackNavigator} from '@react-navigation/stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {useNavigation} from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Stack= createNativeStackNavigator();
+const AuthStack= createNativeStackNavigator();
 
+function AuthStackScreen() {
+  return (
+    <AuthStack.Navigator initialRouteName="Login">
+      <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+      <AuthStack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
+      <AuthStack.Screen name="Preferencias" component={Preferencias} options={{ headerShown: false }}/>
+      <AuthStack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
+    </AuthStack.Navigator>
+  );
+}
 
-function App() {
+// Bottom Tabs después de autenticación
+const Tab = createBottomTabNavigator();
+
+function MainTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={Home} options={{ headerShown: false }}/>
+      <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }}/>
+    </Tab.Navigator>
+  );
+}
+
+// Combinación de Stack y Bottom Tabs
+export default function App() {
+  const isAuthenticated = false; // Cambia esto según tu lógica de autenticación
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Register" component={Register} options={{headerShown: false}}/>
-        <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/> 
-        <Stack.Screen name="Home" component={Home} options={{headerShown: false}}/> 
-        <Stack.Screen name="Preferencias" component={Preferencias} options={{headerShown: false}}/> 
-      </Stack.Navigator>
+      {isAuthenticated ? <MainTabs /> : <AuthStackScreen />}
     </NavigationContainer>
   );
 }
-export default App;
