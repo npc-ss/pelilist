@@ -21,7 +21,7 @@ function Login() {
                 placeholder="Contraseña"
                 placeholderTextColor="#F0DAAE" 
             />
-            <Boton onPress={() => navigation.navigate('Preferencias')}> </Boton>
+            <Boton onPress={() => navigation.navigate('Home')}> </Boton>
             <Text style={styles.olvidarcont}>¿Olvidaste tu contraseña?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
