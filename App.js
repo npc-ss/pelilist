@@ -28,11 +28,38 @@ const Tab = createBottomTabNavigator();
 
 function MainTabs() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={Home} options={{ headerShown: false }}/>
-      <Tab.Screen name="Favoritos" component={Favoritos} options={{ headerShown: false }}/>
-      <Tab.Screen name="Watchlist" component={Watchlist} options={{ headerShown: false }}/>
-      <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }}/>
+    <Tab.Navigator
+    screenOptions={{
+      tabBarStyle: {
+        backgroundColor: '#f1d4ae', // Color de fondo del tab (similar a la imagen)
+        borderTopWidth: 0, // Elimina la línea superior del tab
+        height: 80, // Ajusta la altura
+      },
+      tabBarShowLabel: false, // Oculta los labels de los tabs
+      tabBarActiveTintColor: '#b9733f', // Color activo (naranja)
+      tabBarInactiveTintColor: '#a3784f', // Color inactivo (marrón claro)
+    }}
+    >
+      <Tab.Screen name="Home" component={Home} options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="notifications-outline" color={color} size={30} />
+        ),
+      headerShown: false }}/>
+      <Tab.Screen name="Favoritos" component={Favoritos} options={{ 
+      tabBarIcon: ({ color, size }) => (
+        <Icon name="heart-outline" color={color} size={30} />
+      ),
+      headerShown: false }}/>
+      <Tab.Screen name="Watchlist" component={Watchlist} options={{ 
+      tabBarIcon: ({ color, size }) => (
+        <Icon name="time-outline" color={color} size={30} />
+      ),
+      headerShown: false }}/>
+      <Tab.Screen name="Perfil" component={Perfil} options={{ 
+      tabBarIcon: ({ color, size }) => (
+        <Icon name="person-outline" color={color} size={30} />
+      ),
+      headerShown: false }}/>
     </Tab.Navigator>
   );
 }
