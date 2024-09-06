@@ -11,8 +11,6 @@ export default function Perfil() {
 
 const styles = StyleSheet.create({
 
-  //<Image style={styles.image} source={require('../assets/loco.jpeg')} />
-
   container: {
       flex: 1,
       backgroundColor: '#A3966A',
