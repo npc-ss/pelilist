@@ -4,6 +4,8 @@ import Register from './pantallas/Register';
 import Preferencias from './pantallas/Preferencias';
 import Home from './pantallastab/Home';
 import Perfil from './pantallastab/Perfil';
+import Favoritos from './pantallastab/Favoritos';
+import Watchlist from './pantallastab/Watchlist';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -29,6 +31,8 @@ function MainTabs() {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Home} options={{ headerShown: false }}/>
       <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }}/>
+      <Tab.Screen name="Favoritos" component={Favoritos} options={{ headerShown: false }}/>
+      <Tab.Screen name="Watchlist" component={Watchlist} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 }
