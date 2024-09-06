@@ -30,9 +30,9 @@ function MainTabs() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Home} options={{ headerShown: false }}/>
-      <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }}/>
       <Tab.Screen name="Favoritos" component={Favoritos} options={{ headerShown: false }}/>
       <Tab.Screen name="Watchlist" component={Watchlist} options={{ headerShown: false }}/>
+      <Tab.Screen name="Perfil" component={Perfil} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 }
