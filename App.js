@@ -9,6 +9,8 @@ import Watchlist from './pantallastab/Watchlist';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const AuthStack= createNativeStackNavigator();
 
@@ -31,18 +33,22 @@ function MainTabs() {
     <Tab.Navigator
     screenOptions={{
       tabBarStyle: {
-        backgroundColor: '#f1d4ae', // Color de fondo del tab (similar a la imagen)
+        backgroundColor: '#f0daae', // Color de fondo del tab (similar a la imagen)
         borderTopWidth: 0, // Elimina la línea superior del tab
         height: 80, // Ajusta la altura
+        borderTopWidth: 3,
+        borderTopColor: '#482e1d',
+        borderTopRightRadius: 40,
+        borderTopLeftRadius: 40, 
       },
       tabBarShowLabel: false, // Oculta los labels de los tabs
-      tabBarActiveTintColor: '#b9733f', // Color activo (naranja)
-      tabBarInactiveTintColor: '#a3784f', // Color inactivo (marrón claro)
+      tabBarActiveTintColor: '#482E1D', // Color activo (naranja)
+      tabBarInactiveTintColor: '#895D2b', // Color inactivo (marrón claro)
     }}
     >
       <Tab.Screen name="Home" component={Home} options={{
         tabBarIcon: ({ color, size }) => (
-          <Icon name="notifications-outline" color={color} size={30} />
+          <AntDesign name="home" color={color} size={30} />
         ),
       headerShown: false }}/>
       <Tab.Screen name="Favoritos" component={Favoritos} options={{ 
