@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { ScrollView } from 'react-native';
 
 const AuthStack= createNativeStackNavigator();
 
@@ -33,13 +34,11 @@ function MainTabs() {
     <Tab.Navigator
     screenOptions={{
       tabBarStyle: {
-        backgroundColor: '#f0daae', // Color de fondo del tab (similar a la imagen)
+        backgroundColor: '#f0daae', // Color de fondo del tab
         borderTopWidth: 0, // Elimina la línea superior del tab
         height: 80, // Ajusta la altura
         borderTopWidth: 3,
         borderTopColor: '#482e1d',
-        borderTopRightRadius: 40,
-        borderTopLeftRadius: 40, 
       },
       tabBarShowLabel: false, // Oculta los labels de los tabs
       tabBarActiveTintColor: '#482E1D', // Color activo (naranja)

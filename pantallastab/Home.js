@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useState } from 'react';
 
@@ -14,6 +14,7 @@ export default function Home() {
   return (
     <View style={styles.container}>
       {/* Navbar */}
+      <ScrollView>
       <View style={styles.navbar}>
         <Image source={wubiLogo} style={styles.logo} />
         <TouchableOpacity style={styles.menuButton} onPress={toggleModal}>
@@ -79,6 +80,7 @@ export default function Home() {
         <View style={styles.recommendationBox} />
         <View style={styles.recommendationBox} />
       </View>
+      </ScrollView>
     </View>
   );
 }
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
   },
   box: {
     width: '30%',
-    height: 100,
+    height: 200,
     backgroundColor: '#482e1d',
     marginBottom: 10,
     borderRadius: 10,
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
   },
   recommendationBox: {
     width: '30%',
-    height: 100,
+    height: 200,
     marginBottom: 10,
     backgroundColor: '#482e1d',
     borderRadius: 10,
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 20, 0, 0.5)', // Fondo traslúcido oscuro
+    backgroundColor: 'rgba(0, 5, 0, 0.2)', // Fondo traslúcido oscuro
   },
   modalContent: {
     justifyContent: 'center',
