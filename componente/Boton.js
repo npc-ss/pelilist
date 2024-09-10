@@ -2,9 +2,6 @@ import { TouchableOpacity } from 'react-native'; // Cambiar 'react-native-web' p
 import React from "react";
 import { StyleSheet, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
-import Login from "../pantallas/Login";
-import Register from "../pantallas/Register";
 
 export default function Boton({onPress}) {
     

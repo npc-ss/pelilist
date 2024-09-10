@@ -1,84 +1,118 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import Boton from "../componente/Boton";
-import {useNavigation}from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-function Register() {
-  const navigation= useNavigation();
-  return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={require('../assets/Logologin.png')} />
-      <Text style={styles.titulo}>Registrarse</Text>
-      <Text style={styles.subtitulo}>Crea una cuenta</Text>
-      <TextInput 
-        placeholder="Email"  
-        style={styles.TextInput}    
-      />
-      <TextInput 
+const backgroundImage = require('../assets/Fondo.jpg');
+const logoImage = require('../assets/sobre.png'); 
+const wubiLogo = require('../assets/Wubi_logo3.png');
+const candadoImage = require('../assets/candado.png');
 
-        placeholder="Usuario"  
-        style={styles.TextInput}    
-      />
-      <TextInput 
-        style={styles.TextInput}   
-        placeholder="Contraseña"      
-      />
-      <TextInput 
-        style={styles.TextInput}   
-        placeholder="Confirmar contraseña"      
-      />
-      <Boton onPress={() => navigation.navigate('Login')}></Boton>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-      
-        <Text style={styles.olvidarcont}>¿Ya tenés una cuenta? Inicia Sesión</Text>
-      </TouchableOpacity>
-      <StatusBar style="auto"/>
-    </View>
-  );
+function Login() {
+    const navigation = useNavigation();
+    return (
+        <ImageBackground source={backgroundImage} style={styles.container}>
+            <View style={styles.overlay}>
+                <Image style={styles.image} source={wubiLogo} />
+                
+                <View style={styles.searchSection}>
+                    <Image style={styles.iconInsideInput} source={logoImage} />
+                    <TextInput
+                        placeholder="Email"
+                        style={styles.input}
+                        placeholderTextColor="#F0DAAE"
+                    />
+                </View>
+
+                <View style={styles.searchSection}>
+                    <Image style={styles.iconInsideInput2} source={candadoImage} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Contraseña"
+                        placeholderTextColor="#F0DAAE"
+                    />
+                </View>
+
+                <View style={styles.searchSection}>
+                    <Image style={styles.iconInsideInput2} source={candadoImage} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Confirmar contraseña"
+                        placeholderTextColor="#F0DAAE"
+                    />
+                </View>
+                
+                <Boton onPress={() => navigation.navigate('Login')} />
+                <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                    <Text style={styles.registerText}>¿Ya tenés una cuenta? Iniciá sesión</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
+    );
 }
-export default Register;
+
+export default Login;
 
 const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      backgroundColor: '#A3966A',
-      alignItems: 'center',
-      justifyContent: 'center',
-  },
-  titulo: {
-      fontSize: 40,
-      color: '#482E1D',
-      fontWeight: 'bold',
-  },
-  subtitulo: {
-      fontSize: 20,
-      color: '#F0DAAE',
-      marginBottom: 20,
-  },
-  TextInput: {
-      borderBottomWidth: 6,
-      fontSize: 18,
-      borderColor: '#F0DAAE',
-      width: '80%',
-      height: 50,
-      padding: 10,
-      marginTop: 20,
-      backgroundColor: '#A3966A',
-      color: '#F0DAAE',
-  },
-  olvidarcont: {
-      marginTop: 10,
-      color: '#90553C',
-      fontWeight: 'bold',
-  },
-  registerText: {
-      marginTop: 10,
-      color: '#90553C',
-      fontWeight: 'bold',
-  },
-  image: {
-      height: 200,
-      width: 200,
-  }
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+    input: {
+        borderBottomWidth: 5,
+        fontSize: 18,
+        borderColor: '#F0DAAE',
+        width: '70%',
+        height: 38,
+        backgroundColor: '#aba073',
+        color: '#F0DAAE',
+        marginVertical: 10, 
+        paddingLeft: 40, // Espacio para el ícono dentro del input
+    },
+    registerText: {
+        marginTop: 8,
+        color: '#90553C',
+        fontWeight: 'bold',
+    },
+    image: {
+        marginBottom: 10,
+        height: 300,  
+        width: 300,   
+        resizeMode: 'contain',
+    },
+    searchSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10, 
+        position: 'relative', 
+    },
+    iconInsideInput: {
+        position: 'absolute', 
+        bottom: 10,
+        left: -4,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        zIndex: 1,
+    },
+    iconInsideInput2: {
+        position: 'absolute', 
+        bottom: 14,
+        left: -6,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        zIndex: 1,
+    },
 });
