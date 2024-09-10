@@ -34,10 +34,10 @@ function MainTabs() {
     <Tab.Navigator
     screenOptions={{
       tabBarStyle: {
-        backgroundColor: '#f0daae', // Color de fondo del tab
+        backgroundColor: '#a3966a', // Color de fondo del tab
         borderTopWidth: 0, // Elimina la línea superior del tab
         height: 80, // Ajusta la altura
-        borderTopWidth: 3,
+        borderTopWidth: 1,
         borderTopColor: '#482e1d',
       },
       tabBarShowLabel: false, // Oculta los labels de los tabs

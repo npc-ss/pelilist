@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   box: {
     width: '30%',
-    height: 200,
+    height: 150,
     backgroundColor: '#482e1d',
     marginBottom: 10,
     borderRadius: 10,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   recommendationBox: {
     width: '30%',
-    height: 200,
+    height: 150,
     marginBottom: 10,
     backgroundColor: '#482e1d',
     borderRadius: 10,
