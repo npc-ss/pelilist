@@ -22,7 +22,7 @@ function App() {
         <Stack.Screen name="Preferencias" component={Preferencias} options={{headerShown: false}}/> 
       </Stack.Navigator>
     </NavigationContainer>
-    )}
-    </>
-  );
-}
+    );
+  }
+
+export default App;
