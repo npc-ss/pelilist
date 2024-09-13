@@ -1,6 +1,6 @@
 import React from 'react';
-import Login from './pantallas/Login';
-import Register from './pantallas/Register';
+import Login from './pantallas/login';
+import Register from './pantallas/register';
 import Preferencias from './pantallas/Preferencias';
 import Home from './pantallastab/Home';
 import Perfil from './pantallastab/Perfil';
@@ -12,8 +12,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { ScrollView } from 'react-native';
-
-const AuthStack= createNativeStackNavigator();
+import {useEffect, useState } from "react";import SplashScreen from './pantallas/SplashScreenView';
+createNativeStackNavigator();
 
 function AuthStackScreen() {
   return (
@@ -72,8 +72,20 @@ function MainTabs() {
 // Combinación de Stack y Bottom Tabs
 export default function App() {
   const isAuthenticated = false; // Cambia esto según tu lógica de autenticación
+  const [isShowSplash, setIsShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setIsShowSplash(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isShowSplash]);
 
   return (
+    isShowSplash ?
+    <SplashScreen /> :
     <NavigationContainer>
       {isAuthenticated ? <MainTabs /> : <AuthStackScreen />}
     </NavigationContainer>
