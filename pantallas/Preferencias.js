@@ -7,13 +7,18 @@ import FormSearch from "../componente/FormSearch"
 
 function Preferencias (){
     const navigation= useNavigation();
-    return (
-    <View style={styles.container}>
-        <Text style={styles.titulo}>Wubi</Text>
-        <Boton onPress={() => navigation.navigate('Home')}> </Boton>
-    </View>
-    );
-}
+    const goToHomeTab = () => {
+        // Navega al MainTabs
+        navigation.navigate('MainTabs');  // Asegúrate de que "MainTabs" sea el nombre correcto en tu Stack
+      };
+    
+      return (
+        <View style={styles.container}>
+          <Text style={styles.titulo}>Preferencias</Text>
+          <Boton onPress={goToHomeTab} />
+        </View>
+      );
+    }
 export default Preferencias;
 
 const styles = StyleSheet.create({

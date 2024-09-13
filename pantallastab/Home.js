@@ -39,8 +39,8 @@ export default function Home() {
             <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
               <Text style={styles.menuOption}>Opción 3</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('Opción 2 seleccionada')}>
-              <Text style={styles.menuOption}>Opción 2</Text>
+            <TouchableOpacity onPress={() => alert('Opción 4 seleccionada')}>
+              <Text style={styles.menuOption}>Opción 4</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
               <Text style={styles.menuOption}>Opción 3</Text>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 5, 0, 0.2)', // Fondo traslúcido oscuro
+    backgroundColor: 'rgba(0, 5, 0, 0.1)', // Fondo traslúcido oscuro
   },
   modalContent: {
     justifyContent: 'center',
