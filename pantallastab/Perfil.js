@@ -17,7 +17,7 @@ export default function Perfil() {
     <View style={styles.container}>
       <ScrollView>
       <View style={styles.header}>
-        <Image style={styles.avatar} source={{ uri:''}} />
+        <Image style={styles.avatar} source={{ uri:'https://acortar.link/t38bDl'}} />
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.followers}>
           {user.seguidores} Seguidores | {user.seguidos} Seguidos
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#482E1D',
+    paddingBottom: 5,
   },
   followers: {
     fontSize: 14,
