@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useState } from 'react';
+import FormSearch from '../componente/FormSearch';
 
 const wubiLogo = require('../assets/Wubi_logo3.png');
 
@@ -50,13 +51,9 @@ export default function Home() {
       </Modal>
 
       {/* Search Bar */}
-      <View style={styles.searchBarContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar..."
-          placeholderTextColor="#5e412f"
-        />
-        <Icon name="search-outline" size={25} color="#5e412f" style={styles.searchIcon} />
+      <View>
+        <FormSearch></FormSearch>
+
       </View>
 
       {/* Sección Destacados */}
