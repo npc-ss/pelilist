@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 
+
 export default function Perfil() {
   const navigation = useNavigation();
   const user = {
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#482e1d',
     marginBottom: 5,
     borderRadius: 10,
-    borderWidth: 3,
+    borderWidth: 1.5,
     borderColor: '#f0daae',
   },
 });
