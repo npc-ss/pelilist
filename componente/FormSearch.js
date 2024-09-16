@@ -1,27 +1,43 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Touchable, TouchableOpacity } from "react-native";
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, ActivityIndicator } from "react-native";
+import axios from "axios";
 
-const FormSearch = () => {
+const FormSearch = ({ onSearchResults }) => { // Recibe la prop para enviar resultados
   const [title, setTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const apiKey = '20c177b7'; // Tu API Key de OMDb
 
-  const handleSubmit = () => {
-    console.log("title: ", title);
-    // Aquí puedes agregar la lógica adicional para manejar la búsqueda
+  const handleSubmit = async () => {
+    if (title.trim() === "") return;
+
+    setIsLoading(true); // Mostrar indicador de carga
+
+    try {
+      // Llamada a la API de OMDb
+      const response = await axios.get(`http://www.omdbapi.com/?s=${title}&apikey=${apiKey}`);
+      const movies = response.data.Search || [];
+      onSearchResults(movies); // Envía los resultados a Home
+    } catch (error) {
+      console.error("Error fetching movies: ", error);
+      onSearchResults([]); // En caso de error, pasar array vacío
+    } finally {
+      setIsLoading(false); // Ocultar indicador de carga
+    }
   };
 
   return (
     <View style={styles.searchBarContainer}>
-
       <TextInput
         style={styles.searchInput}
         placeholder="Película..."
         value={title}
-        onChangeText={(e) => setTitle(e)}
+        onChangeText={setTitle}
       />
-      <TouchableOpacity onPress={handleSubmit}>
-        <Text style={styles.searchIcon}>Buscar</Text>
+      <TouchableOpacity onPress={handleSubmit} style={styles.searchButton}>
+        <Text style={styles.searchButtonText}>Buscar</Text>
       </TouchableOpacity>
+
+      {isLoading && <ActivityIndicator size="small" color="#000" />} 
     </View>
   );
 };
@@ -46,9 +62,14 @@ const styles = StyleSheet.create({
     color: '#5e412f',
     fontWeight: 'bold',
   },
-  searchIcon: {
+  searchButton: {
     marginLeft: 10,
-    color: '#5e412f',
-    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#f0daae',
+    borderRadius: 15,
   },
-})
+  searchButtonText: {
+    color: '#482e1d',
+    fontWeight: 'bold',
+  },
+});

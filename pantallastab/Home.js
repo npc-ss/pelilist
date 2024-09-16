@@ -8,10 +8,16 @@ const wubiLogo = require('../assets/Wubi_logo3.png');
 
 export default function Home() {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [movies, setMovies] = useState([]);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const handleSearchResults = (searchResults) => {
+    setMovies(searchResults);
+  };
+
   return (
     <View style={styles.container}>
       {/* Navbar */}
@@ -49,14 +55,11 @@ export default function Home() {
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Search Bar */}
-      <View>
+{/*<View>
         <FormSearch></FormSearch>
 
       </View>
 
-      {/* Sección Destacados */}
       <Text style={styles.sectionTitle}>Destacados</Text>
       <View style={styles.highlightGrid}>
         <View style={styles.box} />
@@ -67,7 +70,6 @@ export default function Home() {
         <View style={styles.box} />
       </View>
 
-      {/* Sección Recomendaciones */}
       <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
       <View style={styles.recommendationGrid}>
         <View style={styles.recommendationBox} />
@@ -77,6 +79,22 @@ export default function Home() {
         <View style={styles.recommendationBox} />
         <View style={styles.recommendationBox} />
       </View>
+      */}
+      {/* Search Bar */}
+      <View>
+          <FormSearch onSearchResults={handleSearchResults} />
+        </View>
+
+        {/* Mostrar Películas */}
+        <Text style={styles.sectionTitle}>Resultados de la búsqueda</Text>
+        <View style={styles.movieGrid}>
+          {movies.map((movie) => (
+            <View key={movie.imdbID} style={styles.movieCard}>
+              <Image source={{ uri: movie.Poster }} style={styles.moviePoster} />
+              <Text style={styles.movieTitle}>{movie.Title}</Text>
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -107,26 +125,6 @@ const styles = StyleSheet.create({
   menuIcon: {
     padding: 10,
   },
-  searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    backgroundColor: '#f0daae',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    marginVertical: 10,
-    borderBlockColor: '#482e1d',
-    borderWidth: 2,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    color: '#5e412f',
-    fontWeight: 'bold',
-  },
-  searchIcon: {
-    marginLeft: 10,
-  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -134,7 +132,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 10,
   },
-  highlightGrid: {
+  movieGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
@@ -147,51 +145,33 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     borderRadius: 20,
   },
-  box: {
+  movieCard: {
     width: '30%',
-    height: 150,
-    backgroundColor: '#482e1d',
-    marginBottom: 10,
-    borderRadius: 10,
-    borderWidth: 4,
-    borderColor: '#f0daae',
-  },
-  recommendationGrid: {
-    backgroundColor: '#A3966A',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginTop: 10,
-    paddingTop: 20,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius:20,
-  },
-  recommendationBox: {
-    width: '30%',
-    height: 150,
     marginBottom: 10,
     backgroundColor: '#482e1d',
     borderRadius: 10,
     borderWidth: 4,
     borderColor: '#f0daae',
+    alignItems: 'center',
   },
-  menuButton: {
-    backgroundColor: '#a3966a',
-    borderRadius: 10,
+  moviePoster: {
+    width: '100%',
+    height: 140,
+    resizeMode: 'cover',
+    borderRadius: 5,
   },
-  menuButtonText: {
-    color: '#482e1d',
-    fontSize: 18,
+  movieTitle: {
+    color: '#F0daae',
     fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 5,
+    marginBottom: 5,
   },
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 5, 0, 0.1)', // Fondo traslúcido oscuro
+    backgroundColor: 'rgba(0, 5, 0, 0.1)',
   },
   modalContent: {
     justifyContent: 'center',
