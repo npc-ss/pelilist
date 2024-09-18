@@ -12,8 +12,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { ScrollView } from 'react-native';
-import {useEffect, useState } from "react";import SplashScreen from './pantallas/SplashScreenView';
-createNativeStackNavigator();
+import { useEffect, useState } from "react";
+import SplashScreen from './pantallas/SplashScreenView';
+
+const AuthStack = createNativeStackNavigator(); // Define AuthStack here
+const Tab = createBottomTabNavigator();
 
 function AuthStackScreen() {
   return (
@@ -27,8 +30,6 @@ function AuthStackScreen() {
 }
 
 // Bottom Tabs después de autenticación
-const Tab = createBottomTabNavigator();
-
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -70,8 +71,18 @@ function MainTabs() {
 }
 
 // Combinación de Stack y Bottom Tabs
-export default function App() {
+
+function isAut() {
   const isAuthenticated = false; // Cambia esto según tu lógica de autenticación
+
+  return (
+    <NavigationContainer>
+      {isAuthenticated ? <MainTabs /> : <AuthStackScreen /> }
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
   const [isShowSplash, setIsShowSplash] = useState(true);
 
   useEffect(() => {
@@ -83,11 +94,5 @@ export default function App() {
     };
   }, [isShowSplash]);
 
-  return (
-    isShowSplash ?
-    <SplashScreen /> :
-    <NavigationContainer>
-      {isAuthenticated ? <MainTabs /> : <AuthStackScreen />}
-    </NavigationContainer>
-  );
+  return (isShowSplash ? <SplashScreen /> : isAut());
 }
