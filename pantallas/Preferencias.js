@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Boton from "../componente/Boton";
-import {useNavigation}from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import FormSearch from "../componente/FormSearch"
 import { LinearGradient } from 'expo-linear-gradient';
 
 const GenresPage = () => {
-  const navigation= useNavigation();
+  const navigation = useNavigation();
   const goToHomeTab = () => {
     // Navega al MainTabs
     navigation.navigate('MainTabs');  // Asegúrate de que "MainTabs" sea el nombre correcto en tu Stack
@@ -25,6 +25,7 @@ const GenresPage = () => {
     { id: 9, name: 'Thriller' },
     { id: 10, name: 'Animación' },
   ]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const handleGenreSelection = (genre) => {
     if (selectedGenres.includes(genre)) {
@@ -32,8 +33,12 @@ const GenresPage = () => {
     } else {
       if (selectedGenres.length < 5) {
         setSelectedGenres([...selectedGenres, genre]);
+      } else{
+        setSelectedGenres([...selectedGenres, genre]);
       }
     }
+    setIsButtonDisabled(selectedGenres.length !== 4 );
+    console.log(`Selected genre: ${genre.name} (${genre.id})`);
   };
 
   const saveGenres = () => {
@@ -59,6 +64,15 @@ const GenresPage = () => {
             </TouchableOpacity>
           ))}
         </View>
+        <Text style={styles.title}>Destacados</Text>
+        <View style={styles.movieGrid}>
+          <View style={styles.box} />
+          <View style={styles.box} />
+          <View style={styles.box} />
+          <View style={styles.box} />
+          <View style={styles.box} />
+          <View style={styles.box} />
+        </View>
       </ScrollView>
       <LinearGradient
         colors={['rgba(240,218,174,1)', 'rgba(240,218,174,0)']}
@@ -78,10 +92,14 @@ const GenresPage = () => {
           paddingBottom: 10,
         }}
       >
-        <TouchableOpacity style={styles.saveButton} onPress={() => {
+        <TouchableOpacity
+          style={[styles.saveButton, isButtonDisabled && styles.disabledButton]}
+          onPress={() => {
             saveGenres();
             goToHomeTab();
-          }}>
+          }}
+          disabled={isButtonDisabled}
+        >
           <Text style={styles.saveButtonText}>Guardar</Text>
         </TouchableOpacity>
       </LinearGradient>
@@ -135,6 +153,30 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontSize: 18,
     color: '#482e1d',
+  },
+  movieGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginTop: 10,
+    paddingTop: 20,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 20,
+  },
+  box: {
+    width: '30%',
+    height: 150,
+    backgroundColor: '#482e1d',
+    marginBottom: 5,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#f0daae',
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });
 
