@@ -30,15 +30,19 @@ const GenresPage = () => {
   const handleGenreSelection = (genre) => {
     if (selectedGenres.includes(genre)) {
       setSelectedGenres(selectedGenres.filter((g) => g.id !== genre.id));
+      setIsButtonDisabled(true);
     } else {
-      if (selectedGenres.length < 5) {
-        setSelectedGenres([...selectedGenres, genre]);
-      } else{
-        setSelectedGenres([...selectedGenres, genre]);
+      if (selectedGenres.length <= 5) {
+        if (selectedGenres.length < 4){
+          setSelectedGenres([...selectedGenres, genre]);
+          console.log(`Selected genre: ${genre.name} (${genre.id})`);
+        } else if(selectedGenres.length < 5){
+          setSelectedGenres([...selectedGenres, genre]);
+          console.log(`Selected genre: ${genre.name} (${genre.id})`);
+          setIsButtonDisabled(false);
+        }
       }
     }
-    setIsButtonDisabled(selectedGenres.length !== 4 );
-    console.log(`Selected genre: ${genre.name} (${genre.id})`);
   };
 
   const saveGenres = () => {
