@@ -14,6 +14,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { ScrollView } from 'react-native';
 import { useEffect, useState } from "react";
 import SplashScreen from './pantallas/SplashScreenView';
+import MovieDetailsScreen from './pantallas/MovieDetailsScreen';
 
 const AuthStack = createNativeStackNavigator(); // Define AuthStack here
 const Tab = createBottomTabNavigator();
@@ -25,6 +26,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
       <AuthStack.Screen name="Preferencias" component={Preferencias} options={{ headerShown: false }}/>
       <AuthStack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
+      <AuthStack.Screen name="MovieDetailsScreen" component={MovieDetailsScreen} options={{ headerShown: false }} />
     </AuthStack.Navigator>
   );
 }

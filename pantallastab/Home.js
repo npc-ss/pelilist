@@ -6,7 +6,7 @@ import FormSearch from '../componente/FormSearch';
 
 const wubiLogo = require('../assets/Wubi_logo3.png');
 
-export default function Home() {
+export default function Home({ navigation}) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [movies, setMovies] = useState([]);
 
@@ -88,13 +88,24 @@ export default function Home() {
         {/* Mostrar Películas */}
         <Text style={styles.sectionTitle}>Resultados de la búsqueda</Text>
         <View style={styles.movieGrid}>
-          {movies.map((movie) => (
-            <View key={movie.imdbID} style={styles.movieCard}>
-              <Image source={{ uri: movie.Poster }} style={styles.moviePoster} />
-              <Text style={styles.movieTitle}>{movie.Title}</Text>
-            </View>
-          ))}
-        </View>
+
+        {movies.map((movie) => (
+        <TouchableOpacity key={movie.imdbID} onPress={() => navigation.navigate('MovieDetailsScreen', { movie })}>
+        <View style={styles.movieCard}>
+        {movie.Poster !== "N/A" ? (
+          <Image source={{ uri: movie.Poster }} style={styles.moviePoster} />
+        ) : (
+          <View style={styles.noPoster}>
+            <Text style={styles.noPosterText}>No Image</Text>
+          </View>
+        )}
+        <Text style={styles.movieTitle}>{movie.Title}</Text>
+      </View>
+    </TouchableOpacity>
+  ))}
+  
+</View>
+
       </ScrollView>
     </View>
   );
@@ -146,11 +157,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   movieCard: {
-    width: '30%',
+    width: 100,
     marginBottom: 10,
     backgroundColor: '#482e1d',
-    borderRadius: 10,
-    borderWidth: 4,
+    borderRadius: 5,
+    borderWidth: 2,
     borderColor: '#f0daae',
     alignItems: 'center',
   },
@@ -158,7 +169,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 140,
     resizeMode: 'cover',
-    borderRadius: 5,
+    borderRadius: 1,
   },
   movieTitle: {
     color: '#F0daae',
@@ -166,6 +177,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
     marginBottom: 5,
+    maxWidth:'100%'
   },
   modalBackground: {
     flex: 1,
