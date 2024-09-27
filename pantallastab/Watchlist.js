@@ -1,55 +1,74 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function Watchlist() {
+export default function Perfil() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <Text>Tab Watch</Text>
+      <ScrollView>
+        <View>
+          <View style={styles.titleContainer}>
+            <Icon name="time-outline" size={25} style={styles.icon} />
+            <Text style={styles.sectionTitle}>Watchlist</Text>
+          </View>
+          <View style={styles.highlightGrid}>
+          <View style={styles.box} />
+        <View style={styles.box} />
+        <View style={styles.box} />
+        <View style={styles.box} />
+        <View style={styles.box} />
+        <View style={styles.box} />
+        <View style={styles.box} />
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
-      flex: 1,
-      backgroundColor: '#A3966A',
-      alignItems: 'center',
-      justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#f0daae',
+    paddingTop: 100,
   },
-  titulo: {
-      fontSize: 40,
-      color: '#482E1D',
-      fontWeight: 'bold',
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingBottom: 5,
   },
-  subtitulo: {
-      fontSize: 20,
-      color: '#F0DAAE',
-      marginBottom: 20,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#5e412f',
+    marginLeft: 5, 
   },
-  TextInput: {
-      borderBottomWidth: 6,
-      fontSize: 18,
-      borderColor: '#F0DAAE',
-      width: '80%',
-      height: 50,
-      padding: 10,
-      marginTop: 20,
-      backgroundColor: '#A3966A',
-      color: '#F0DAAE',
+  highlightGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    backgroundColor: '#A3966A',
+    paddingTop: 20,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 30,
   },
-  olvidarcont: {
-      marginTop: 10,
-      color: '#90553C',
-      fontWeight: 'bold',
+  box: {
+    width: '30%',
+    height: 150,
+    backgroundColor: '#482e1d',
+    marginBottom: 5,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: '#f0daae',
   },
-  registerText: {
-      marginTop: 10,
-      color: '#90553C',
-      fontWeight: 'bold',
-  },
-  image: {
-      height: 200,
-      width: 200,
+  icon: {
+    // Puedes ajustar el estilo del icono aquí si es necesario
   }
 });
