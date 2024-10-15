@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const MovieDetailsScreen = ({ route }) => {
   const { movie } = route.params; // Obtenemos los detalles de la película de la ruta
+  console.log(movie)
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
