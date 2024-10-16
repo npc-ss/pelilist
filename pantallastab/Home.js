@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  View, Text, TextInput, StyleSheet, Image, 
+  TouchableOpacity, Modal, ScrollView 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useState } from 'react';
 import FormSearch from '../componente/FormSearch';
 
 const wubiLogo = require('../assets/Wubi_logo3.png');
 
-export default function Home({ navigation}) {
+export default function Home({ navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [movies, setMovies] = useState([]);
 
@@ -22,90 +24,66 @@ export default function Home({ navigation}) {
     <View style={styles.container}>
       {/* Navbar */}
       <ScrollView>
-      <View style={styles.navbar}>
-        <Image source={wubiLogo} style={styles.logo} />
-        <TouchableOpacity style={styles.menuButton} onPress={toggleModal}>
-        <Icon name="menu" size={30} color="#F0DAAE" style={styles.menuIcon} />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.navbar}>
+          <Image source={wubiLogo} style={styles.logo} />
+          <TouchableOpacity style={styles.menuButton} onPress={toggleModal}>
+            <Icon name="menu" size={30} color="#F0DAAE" style={styles.menuIcon} />
+          </TouchableOpacity>
+        </View>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={toggleModal}
-      >
-        <TouchableOpacity style={styles.modalBackground} onPress={toggleModal}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity onPress={() => alert('Opción 1 seleccionada')}>
-              <Text style={styles.menuOption}>Opción 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('Opción 2 seleccionada')}>
-              <Text style={styles.menuOption}>Opción 2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
-              <Text style={styles.menuOption}>Opción 3</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('Opción 4 seleccionada')}>
-              <Text style={styles.menuOption}>Opción 4</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
-              <Text style={styles.menuOption}>Opción 3</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-{/*<View>
-        <FormSearch></FormSearch>
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={toggleModal}
+        >
+          <TouchableOpacity style={styles.modalBackground} onPress={toggleModal}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity onPress={() => alert('Opción 1 seleccionada')}>
+                <Text style={styles.menuOption}>Opción 1</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => alert('Opción 2 seleccionada')}>
+                <Text style={styles.menuOption}>Opción 2</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
+                <Text style={styles.menuOption}>Opción 3</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => alert('Opción 4 seleccionada')}>
+                <Text style={styles.menuOption}>Opción 4</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
 
-      </View>
-
-      <Text style={styles.sectionTitle}>Destacados</Text>
-      <View style={styles.highlightGrid}>
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-      </View>
-
-      <Text style={styles.sectionTitle}>Recomendaciones para ti</Text>
-      <View style={styles.recommendationGrid}>
-        <View style={styles.recommendationBox} />
-        <View style={styles.recommendationBox} />
-        <View style={styles.recommendationBox} />
-        <View style={styles.recommendationBox} />
-        <View style={styles.recommendationBox} />
-        <View style={styles.recommendationBox} />
-      </View>
-      */}
-      {/* Search Bar */}
-      <View>
+        {/* Search Bar */}
+        <View>
           <FormSearch onSearchResults={handleSearchResults} />
         </View>
 
         {/* Mostrar Películas */}
         <Text style={styles.sectionTitle}>Resultados de la búsqueda</Text>
         <View style={styles.movieGrid}>
-
-        {movies.map((movie) => (
-        <TouchableOpacity key={movie.imdbID} onPress={() => navigation.navigate('MovieDetailsScreen', { movie })}>
-        <View style={styles.movieCard}>
-        {movie.Poster !== "N/A" ? (
-          <Image source={{ uri: movie.Poster }} style={styles.moviePoster} />
-        ) : (
-          <View style={styles.noPoster}>
-            <Text style={styles.noPosterText}>No Image</Text>
-          </View>
-        )}
-        <Text style={styles.movieTitle}>{movie.Title}</Text>
-      </View>
-    </TouchableOpacity>
-  ))}
-  
-</View>
-
+          {movies.map((movie) => (
+            <TouchableOpacity
+              key={movie.id} // Cambiado de imdbID a id
+              onPress={() => navigation.navigate('MovieDetailsScreen', { movie })}
+            >
+              <View style={styles.movieCard}>
+                {movie.poster_path ? (
+                  <Image 
+                    source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }} 
+                    style={styles.moviePoster} 
+                  />
+                ) : (
+                  <View style={styles.noPoster}>
+                    <Text style={styles.noPosterText}>No Image</Text>
+                  </View>
+                )}
+                <Text style={styles.movieTitle}>{movie.title}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -124,7 +102,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#a3966a',
     paddingBottom: 10,
-    border: 20,
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40, 
   },
@@ -169,7 +146,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 140,
     resizeMode: 'cover',
-    borderRadius: 1,
   },
   movieTitle: {
     color: '#F0daae',
@@ -177,7 +153,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
     marginBottom: 5,
-    maxWidth:'100%'
+    maxWidth: '100%',
+  },
+  noPoster: {
+    width: '100%',
+    height: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ccc',
+  },
+  noPosterText: {
+    color: '#333',
   },
   modalBackground: {
     flex: 1,

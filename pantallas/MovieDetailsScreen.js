@@ -1,20 +1,21 @@
 // MovieDetailsScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+
 const MovieDetailsScreen = ({ route }) => {
-  const { movie } = route.params; // Obtenemos los detalles de la película de la ruta
-  console.log(movie)
+  const { movie } = route.params;
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
   const [watchLater, setWatchLater] = useState(false);
 
   const handleAddComment = () => {
     setComments([...comments, { text: comment }]);
-    setComment("");
+    setComment('');
   };
 
   const handleRating = (value) => {
@@ -24,16 +25,20 @@ const MovieDetailsScreen = ({ route }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Image source={{ uri: movie.Poster }} style={styles.poster} />
+        <Image
+          source={{ uri: `${BASE_IMAGE_URL}${movie.poster_path}` }}
+          style={styles.poster}
+        />
         <View style={styles.movieInfo}>
-          <Text style={styles.title}>{movie.Title}</Text>
-          <Text style={styles.director}>Dirigida por {movie.Director || '-'}</Text>
-          <Text style={styles.info}>{movie.Year} - {movie.Runtime}</Text>
-          <TouchableOpacity style={styles.trailerButton}>
-            <Text style={styles.trailerButtonText}>TRAILER</Text>
-          </TouchableOpacity>
-          <Text style={styles.description}>{movie.Plot}</Text>
+          <Text style={styles.title}>{movie.title}</Text>
+          <Text style={styles.info}>{movie.release_date.slice(0, 4)}</Text>
         </View>
+      </View>
+
+      {/* Descripción */}
+      <Text style={styles.sectionTitle}>Descripción: </Text>
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.description}>{movie.overview}</Text>
       </View>
 
       {/* Rating Section */}
@@ -41,7 +46,6 @@ const MovieDetailsScreen = ({ route }) => {
         <Text style={styles.sectionTitle}>Puntuación</Text>
         <View style={styles.rating}>
           <Text style={styles.ratingText}>{rating}/10</Text>
-          {/* Aquí podrías incluir un control para seleccionar la puntuación */}
           <TouchableOpacity onPress={() => handleRating(rating + 1)}>
             <Icon name="star" size={30} color="#FFD700" />
           </TouchableOpacity>
@@ -51,11 +55,9 @@ const MovieDetailsScreen = ({ route }) => {
       {/* Comments Section */}
       <View style={styles.commentsSection}>
         <Text style={styles.sectionTitle}>Comentarios</Text>
-        <View>
-          {comments.map((c, index) => (
-            <Text key={index} style={styles.comment}>{c.text}</Text>
-          ))}
-        </View>
+        {comments.map((c, index) => (
+          <Text key={index} style={styles.comment}>{c.text}</Text>
+        ))}
         <TextInput
           style={styles.commentInput}
           placeholder="Escribe tu opinión..."
@@ -89,49 +91,45 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    marginTop: 200,
     flexDirection: 'row',
     marginBottom: 20,
   },
   poster: {
+    marginTop: 200,
     width: 200,
     height: 290,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#A3966A',
+    borderColor: '#482e1d',
   },
   movieInfo: {
     marginLeft: 20,
     flex: 1,
+    justifyContent: 'center',
   },
   title: {
-    marginTop: 130,
+    marginTop: 300,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#482e1d',
-  },
-  director: {
-    fontSize: 16,
-    color: '#482e1d',
-    marginVertical: 5,
+    marginBottom: 5,
   },
   info: {
     fontSize: 14,
-    color: '#5e412f',
+    color: '#482e1d',
     marginBottom: 10,
   },
-  trailerButton: {
-    backgroundColor: '#a3966a',
+  descriptionContainer: {
+    marginTop: 10,
+    marginBottom: 20,
     padding: 10,
+    backgroundColor: '#a3966a',
     borderRadius: 5,
   },
-  trailerButtonText: {
-    color: '#F0DAAE',
-    fontWeight: 'bold',
-  },
   description: {
-    marginTop: 10,
-    color: '#5e412f',
+    fontSize: 16,
+    color: '#482e1d',
+    textAlign: 'justify',
   },
   ratingSection: {
     marginBottom: 20,
@@ -179,5 +177,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
+    marginBottom: 80,
   },
 });
