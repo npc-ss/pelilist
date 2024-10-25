@@ -1,112 +1,154 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import Boton from "../componente/Boton";
-import { useNavigation } from '@react-navigation/native';
-import FormSearch from "../componente/FormSearch"
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  Platform,
+  Dimensions,
+} from 'react-native';
+import { Button, Card, Image } from 'react-native-elements';
+import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
-const GenresPage = () => {
+const { width, height } = Dimensions.get('window');
+
+const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6'; // Reemplaza con tu clave de API de TMDB
+const BASE_URL = 'https://api.themoviedb.org/3';
+
+const MovieGenresScreen = () => {
   const navigation = useNavigation();
-  const goToHomeTab = () => {
-    // Navega al MainTabs
-    navigation.navigate('MainTabs');  // Asegúrate de que "MainTabs" sea el nombre correcto en tu Stack
-  };
+  const [genres, setGenres] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
-  const [genres, setGenres] = useState([
-    { id: 1, name: 'Acción' },
-    { id: 2, name: 'Comedia' },
-    { id: 3, name: 'Drama' },
-    { id: 4, name: 'Terror' },
-    { id: 5, name: 'Ciencia Ficción' },
-    { id: 6, name: 'Aventura' },
-    { id: 7, name: 'Romance' },
-    { id: 8, name: 'Misterio' },
-    { id: 9, name: 'Thriller' },
-    { id: 10, name: 'Animación' },
-  ]);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [moviesByGenre, setMoviesByGenre] = useState({});
 
-  const handleGenreSelection = (genre) => {
-    if (selectedGenres.includes(genre)) {
-      setSelectedGenres(selectedGenres.filter((g) => g.id !== genre.id));
-      setIsButtonDisabled(true);
-    } else {
-      if (selectedGenres.length <= 5) {
-        if (selectedGenres.length < 4){
-          setSelectedGenres([...selectedGenres, genre]);
-          console.log(`Selected genre: ${genre.name} (${genre.id})`);
-        } else if(selectedGenres.length < 5){
-          setSelectedGenres([...selectedGenres, genre]);
-          console.log(`Selected genre: ${genre.name} (${genre.id})`);
-          setIsButtonDisabled(false);
-        }
-      }
+  useEffect(() => {
+    fetchGenres();
+  }, []);
+
+  const fetchGenres = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+      setGenres(response.data.genres);
+      await fetchMoviesForGenres(response.data.genres);
+    } catch (error) {
+      console.error('Error fetching genres:', error);
+      Alert.alert('Error', 'No se pudieron cargar los géneros. Inténtalo de nuevo más tarde.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const saveGenres = () => {
-    // Save the selected genres to storage or API
-    console.log('Selected genres:', selectedGenres);
+  const fetchMoviesForGenres = async (genres) => {
+    const moviesPromises = genres.map(async (genre) => {
+      try {
+        const response = await axios.get(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genre.id}`);
+        return { ...genre, movies: response.data.results };
+      } catch (error) {
+        console.error(`Error fetching movies for genre ${genre.name}:`, error.message);
+        Alert.alert('Error', `No se pudieron cargar las películas para el género: ${genre.name}`);
+        return { ...genre, movies: [] };
+      }
+    });
+
+    const moviesByGenreData = await Promise.all(moviesPromises);
+    const moviesByGenreMap = moviesByGenreData.reduce((acc, genre) => {
+      acc[genre.id] = genre.movies;
+      return acc;
+    }, {});
+
+    setMoviesByGenre(moviesByGenreMap);
   };
+
+  const handleSelectGenre = (genre) => {
+    const isSelected = selectedGenres.find(selected => selected.id === genre.id);
+    if (isSelected) {
+      setSelectedGenres(selectedGenres.filter(selected => selected.id !== genre.id));
+    } else if (selectedGenres.length < 5) {
+      setSelectedGenres([...selectedGenres, { id: genre.id, name: genre.name }]);
+    }
+  };
+
+  const handleSaveGenres = () => {
+    if (selectedGenres.length === 5) {
+      navigation.navigate('MainTabs');
+      console.log('Selected genres:', selectedGenres);
+    } else {
+      Alert.alert('Debes seleccionar 5 géneros');
+    }
+  };
+
+  const renderItem = ({ item }) => {
+    const isSelected = selectedGenres.find(selected => selected.id === item.id);
+    return (
+      <View style={styles.genreContainer}>
+        <TouchableOpacity onPress={() => handleSelectGenre(item)}>
+          <Card containerStyle={[styles.card, isSelected && styles.selectedCard]}>
+            <Card.Title>{item.name}</Card.Title>
+            <Card.Divider />
+            <View style={styles.posterContainer}>
+              {moviesByGenre[item.id] && moviesByGenre[item.id].length > 0 && moviesByGenre[item.id].slice(0, 4).map((movie) => {
+                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                return (
+                  <Image
+                    key={movie.id}
+                    source={{ uri: posterUrl }}
+                    style={styles.poster}
+                    onError={() => console.log(`Error loading image for movie ID: ${movie.id}`)}
+                    PlaceholderContent={<ActivityIndicator />}
+                    resizeMode="cover"
+                  />
+                );
+              })}
+            </View>
+          </Card>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
+  }
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <Text style={styles.title}>Elige tus géneros favoritos</Text>
-        <View style={styles.genresContainer}>
-          {genres.map((genre) => (
-            <TouchableOpacity
-              key={genre.id}
-              style={[
-                styles.genreButton,
-                selectedGenres.includes(genre) ? styles.selectedGenre : null,
-              ]}
-              onPress={() => handleGenreSelection(genre)}
-            >
-              <Text style={styles.genreText}>{genre.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <Text style={styles.title}>Destacados</Text>
-        <View style={styles.movieGrid}>
-          <View style={styles.box} />
-          <View style={styles.box} />
-          <View style={styles.box} />
-          <View style={styles.box} />
-          <View style={styles.box} />
-          <View style={styles.box} />
-        </View>
-      </ScrollView>
-      <LinearGradient
-        colors={['rgba(240,218,174,1)', 'rgba(240,218,174,0)']}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 0, y: 0 }}
-        style={{
-          flex: 1,
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          paddingTop: 50,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: 20,
-          paddingBottom: 10,
-        }}
-      >
-        <TouchableOpacity
-          style={[styles.saveButton, isButtonDisabled && styles.disabledButton]}
-          onPress={() => {
-            saveGenres();
-            goToHomeTab();
-          }}
-          disabled={isButtonDisabled}
+      <FlatList
+        data={genres}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ paddingBottom: 150 }}
+      />
+      <View style={styles.bottomContainer}>
+        <LinearGradient
+          colors={['rgba(240,218,174,0)', 'rgba(240,218,174,1)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.2 }}
+          style={styles.gradient}
         >
-          <Text style={styles.saveButtonText}>Guardar</Text>
-        </TouchableOpacity>
-      </LinearGradient>
+          <View style={styles.contentContainer}>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Guardar géneros"
+                onPress={handleSaveGenres}
+                buttonStyle={styles.button}
+                titleStyle={styles.buttonText}
+              />
+            </View>
+            <Text style={styles.text}>
+              Seleccione tus 5 géneros favoritos
+            </Text>
+            <Text style={styles.text}>
+              Seleccionados: {selectedGenres.map(genre => genre.name).join(', ')}
+            </Text>
+          </View>
+        </LinearGradient>
+      </View>
     </View>
   );
 };
@@ -116,72 +158,63 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0daae',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginHorizontal: 20,
-    marginVertical: 10,
-  },
-  genresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginTop: 10,
-  },
-  genreButton: {
-    width: '30%',
-    height: 50,
-    backgroundColor: '#482e1d',
+  genreContainer: {
     marginBottom: 10,
-    borderRadius: 10,
-    borderWidth: 4,
-    borderColor: '#f0daae',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  selectedGenre: {
+  card: {
+    borderRadius: 10,
+    backgroundColor: '#e6c78f',
+  },
+  selectedCard: {
     backgroundColor: '#a3966a',
   },
-  genreText: {
-    fontSize: 18,
-    color: '#f0daae',
-  },
-  saveButton: {
-    backgroundColor: '#a3966a',
-    borderRadius: 10,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    fontSize: 18,
-    color: '#482e1d',
-  },
-  movieGrid: {
+  posterContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginTop: 10,
-    paddingTop: 20,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 20,
   },
-  box: {
-    width: '30%',
+  poster: {
+    width: 70,
+    height: 100,
+    borderRadius: 5,
+  },
+  bottomContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     height: 150,
-    backgroundColor: '#482e1d',
+  },
+  gradient: {
+    flex: 1,
+    width: width,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    padding: 20,
+  },
+  buttonContainer: {
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#a3966a',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#333',
     marginBottom: 5,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: '#f0daae',
   },
-  disabledButton: {
-    opacity: 0.5,
-  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+   },
 });
 
-export default GenresPage;
+export default MovieGenresScreen;
