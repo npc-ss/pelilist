@@ -7,17 +7,14 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
-  Platform,
   Dimensions,
 } from 'react-native';
 import { Button, Card, Image } from 'react-native-elements';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window');
-
-const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6'; // Reemplaza con tu clave de API de TMDB
+const { width } = Dimensions.get('window');
+const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const MovieGenresScreen = () => {
@@ -26,6 +23,7 @@ const MovieGenresScreen = () => {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [moviesByGenre, setMoviesByGenre] = useState({});
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchGenres();
@@ -33,12 +31,16 @@ const MovieGenresScreen = () => {
 
   const fetchGenres = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
-      setGenres(response.data.genres);
-      await fetchMoviesForGenres(response.data.genres);
+      const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=es-ES`);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.status_message);
+      }
+      setGenres(data.genres);
+      await fetchMoviesForGenres(data.genres);
     } catch (error) {
       console.error('Error fetching genres:', error);
-      Alert.alert('Error', 'No se pudieron cargar los géneros. Inténtalo de nuevo más tarde.');
+      setError('Failed to load genres. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -47,18 +49,24 @@ const MovieGenresScreen = () => {
   const fetchMoviesForGenres = async (genres) => {
     const moviesPromises = genres.map(async (genre) => {
       try {
-        const response = await axios.get(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genre.id}`);
-        return { ...genre, movies: response.data.results };
+        const response = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genre.id}&language=es-ES`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.status_message);
+        }
+        return { ...genre, movies: data.results };
       } catch (error) {
         console.error(`Error fetching movies for genre ${genre.name}:`, error.message);
-        Alert.alert('Error', `No se pudieron cargar las películas para el género: ${genre.name}`);
-        return { ...genre, movies: [] };
+        return { ...genre, movies: [] }; // Return empty movies array on error
       }
     });
 
-    const moviesByGenreData = await Promise.all(moviesPromises);
-    const moviesByGenreMap = moviesByGenreData.reduce((acc, genre) => {
-      acc[genre.id] = genre.movies;
+    const moviesByGenreData = await Promise.allSettled(moviesPromises);
+    const moviesByGenreMap = moviesByGenreData.reduce((acc, result) => {
+      if (result.status === 'fulfilled') {
+        const genre = result.value;
+        acc[genre.id] = genre.movies;
+      }
       return acc;
     }, {});
 
@@ -99,7 +107,7 @@ const MovieGenresScreen = () => {
                     key={movie.id}
                     source={{ uri: posterUrl }}
                     style={styles.poster}
-                    onError={() => console.log(`Error loading image for movie ID: ${movie.id}`)}
+                    onError={() => console.log(`Error loading image for movie ID: ${movie.id}` )}
                     PlaceholderContent={<ActivityIndicator />}
                     resizeMode="cover"
                   />
@@ -114,6 +122,14 @@ const MovieGenresScreen = () => {
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
   }
 
   return (
@@ -214,7 +230,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-   },
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+  },
 });
 
 export default MovieGenresScreen;
