@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Alert} from 'react-native';
 import Boton from "../componente/Boton";
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,7 +9,27 @@ const logoImage = require('../assets/sobre.png');
 const wubiLogo = require('../assets/Wubi_logo3.png');
 const candadoImage = require('../assets/candado.png');
 
-function Login() {
+import appFirebase from '../credenciales';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+const auth = getAuth(appFirebase)
+
+function Login(props) {
+
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState ()
+
+    const logueo = async()=>{
+        try {
+            await signInWithEmailAndPassword(auth, email, password)
+            Alert.alert('Iniciando sesión','Accediendo...')
+            props.navigation.navigate('Preferencias')
+        }   
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+
     const navigation = useNavigation();
     return (
         <ImageBackground source={backgroundImage} style={styles.container}>
@@ -22,6 +42,7 @@ function Login() {
                         placeholder="Email"
                         style={styles.input}
                         placeholderTextColor="#F0DAAE"
+                        onChangeText={(text)=>setEmail(text)}
                     />
                 </View>
 
@@ -31,10 +52,12 @@ function Login() {
                         style={styles.input}
                         placeholder="Contraseña"
                         placeholderTextColor="#F0DAAE"
+                        onChangeText={(text)=>setPassword(text)}
+                        secureTextEntry={true}
                     />
                 </View>
                 
-                <Boton onPress={() => navigation.navigate('Preferencias')} />
+                <Boton onPress={logueo}/>
                 <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                     <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
