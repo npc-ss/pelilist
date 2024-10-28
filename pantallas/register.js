@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Alert} from 'react-native';
 import Boton from "../componente/Boton";
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,7 +9,33 @@ const logoImage = require('../assets/sobre.png');
 const wubiLogo = require('../assets/Wubi_logo3.png');
 const candadoImage = require('../assets/candado.png');
 
-function Login() {
+import appFirebase from '../credenciales';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+const auth = getAuth(appFirebase)
+
+function Register() {
+
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState ()
+
+    const registro = async()=>{
+        try {
+            await createUserWithEmailAndPassword(auth, email, password)
+            Alert.alert('La cuenta se creó con exito')
+            navigation.navigate('Login')
+        }   
+        catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                Alert.alert('Error', 'La cuenta ya existe');
+            } else {
+                Alert.alert('Error', 'Ha ocurrido un error al crear la cuenta');
+            }
+            console.log(error);
+        }
+    };
+
+
+
     const navigation = useNavigation();
     return (
         <ImageBackground source={backgroundImage} style={styles.container}>
@@ -22,6 +48,7 @@ function Login() {
                         placeholder="Email"
                         style={styles.input}
                         placeholderTextColor="#F0DAAE"
+                        onChangeText={(text)=>setEmail(text)}
                     />
                 </View>
 
@@ -31,19 +58,12 @@ function Login() {
                         style={styles.input}
                         placeholder="Contraseña"
                         placeholderTextColor="#F0DAAE"
-                    />
-                </View>
-
-                <View style={styles.searchSection}>
-                    <Image style={styles.iconInsideInput2} source={candadoImage} />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Confirmar contraseña"
-                        placeholderTextColor="#F0DAAE"
+                        onChangeText={(text)=>setPassword(text)}
+                        secureTextEntry={true}
                     />
                 </View>
                 
-                <Boton onPress={() => navigation.navigate('Login')} />
+                <Boton onPress={registro}/>
                 <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.registerText}>¿Ya tenés una cuenta? Iniciá sesión</Text>
@@ -53,7 +73,7 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;
 
 const styles = StyleSheet.create({
     container: {
