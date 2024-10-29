@@ -1,7 +1,8 @@
-// MovieDetailsScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { db, auth } from '../credenciales'; // Importa Firestore y Auth
+import { collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
 const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -11,7 +12,53 @@ const MovieDetailsScreen = ({ route }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [watchLater, setWatchLater] = useState(false);
+
+  useEffect(() => {
+    // Verifica si la película ya está en favoritos al cargar la pantalla
+    const checkFavorite = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const q = query(
+          collection(db, 'favoritos'),
+          where('userId', '==', user.uid),
+          where('movieId', '==', movie.id)
+        );
+        const querySnapshot = await getDocs(q);
+        setLiked(!querySnapshot.empty);
+      }
+    };
+    checkFavorite();
+  }, []);
+
+  const handleToggleFavorite = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        if (!liked) {
+          // Agrega la película a favoritos
+          await addDoc(collection(db, 'favoritos'), {
+            userId: user.uid,
+            movieId: movie.id,
+            title: movie.title,
+            poster_path: movie.poster_path,
+            timestamp: new Date(),
+          });
+        } else {
+          // Elimina la película de favoritos
+          const q = query(
+            collection(db, 'favoritos'),
+            where('userId', '==', user.uid),
+            where('movieId', '==', movie.id)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => deleteDoc(doc.ref));
+        }
+        setLiked(!liked);
+      } catch (error) {
+        console.error('Error al manejar favoritos:', error);
+      }
+    }
+  };
 
   const handleAddComment = () => {
     setComments([...comments, { text: comment }]);
@@ -35,13 +82,11 @@ const MovieDetailsScreen = ({ route }) => {
         </View>
       </View>
 
-      {/* Descripción */}
       <Text style={styles.sectionTitle}>Descripción: </Text>
       <View style={styles.descriptionContainer}>
         <Text style={styles.description}>{movie.overview}</Text>
       </View>
 
-      {/* Rating Section */}
       <View style={styles.ratingSection}>
         <Text style={styles.sectionTitle}>Puntuación</Text>
         <View style={styles.rating}>
@@ -52,7 +97,6 @@ const MovieDetailsScreen = ({ route }) => {
         </View>
       </View>
 
-      {/* Comments Section */}
       <View style={styles.commentsSection}>
         <Text style={styles.sectionTitle}>Comentarios</Text>
         {comments.map((c, index) => (
@@ -69,13 +113,9 @@ const MovieDetailsScreen = ({ route }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Like and Watch Later Buttons */}
       <View style={styles.actionButtons}>
-        <TouchableOpacity onPress={() => setLiked(!liked)}>
+        <TouchableOpacity onPress={handleToggleFavorite}>
           <Icon name="heart" size={50} color={liked ? '#5e412f' : '#A3966A'} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setWatchLater(!watchLater)}>
-          <Icon name="time" size={50} color={watchLater ? '#5e412f' : '#A3966A'} />
         </TouchableOpacity>
       </View>
     </ScrollView>

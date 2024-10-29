@@ -1,98 +1,92 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { db, auth } from '../credenciales'; // Asegúrate de que el path a credenciales.js es correcto
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
-export default function Perfil() {
-  const navigation = useNavigation();
+const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+
+const Favoritos = () => {
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const q = query(
+            collection(db, 'favoritos'),
+            where('userId', '==', user.uid)
+          );
+          const querySnapshot = await getDocs(q);
+          const fetchedFavorites = querySnapshot.docs.map((doc) => doc.data());
+          setFavorites(fetchedFavorites);
+        } catch (error) {
+          console.error('Error al obtener favoritos:', error);
+        }
+      }
+    };
+    fetchFavorites();
+  }, []);
+
+  const renderFavorite = ({ item }) => (
+    <View style={styles.gridItem}>
+      <Image
+        source={{ uri: `${BASE_IMAGE_URL}${item.poster_path}` }}
+        style={styles.poster}
+      />
+      <Text style={styles.title}>{item.title}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <View>
-          <View style={styles.titleContainer}>
-            <Icon name="heart-outline" size={25} style={styles.icon} />
-            <Text style={styles.sectionTitle}>Favoritos</Text>
-          </View>
-          <View style={styles.highlightGrid}>
-          <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-          </View>
-        </View>
-      </ScrollView>
+      <Text style={styles.header}>Favoritos</Text>
+      <FlatList
+        data={favorites}
+        keyExtractor={(item) => item.movieId.toString()}
+        renderItem={renderFavorite}
+        numColumns={2}
+        contentContainerStyle={styles.grid}
+      />
     </View>
   );
-}
+};
+
+export default Favoritos;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0daae',
-    paddingTop: 100,
+    backgroundColor: '#F0DAAE',
+    padding: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 20,
-    paddingBottom: 5,
-  },
-  sectionTitle: {
-    fontSize: 18,
+  header: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#5e412f',
-    marginLeft: 5, 
+    marginBottom: 20,
+    color: '#482e1d',
+    paddingTop: 40,
   },
-  highlightGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  grid: {
     justifyContent: 'space-between',
-    marginHorizontal: 20,
-    backgroundColor: '#A3966A',
-    paddingTop: 20,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 30,
   },
-  box: {
-    width: '30%',
-    height: 150,
-    backgroundColor: '#482e1d',
-    marginBottom: 5,
+  gridItem: {
+    flex: 1,
+    margin: 5,
+    alignItems: 'center',
+  },
+  poster: {
+    width: 150,
+    height: 225,
     borderRadius: 10,
-    borderWidth: 3,
-    borderColor: '#f0daae',
+    marginBottom: 10,
+    borderBlockColor: 1,
+    borderColor: #
   },
-  icon: {
-    // Puedes ajustar el estilo del icono aquí si es necesario
-  }
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#482e1d',
+  },
 });

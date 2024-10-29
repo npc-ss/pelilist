@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function Perfil() {
+export default function Watchlist() {
   const navigation = useNavigation();
 
   return (
@@ -15,13 +15,7 @@ export default function Perfil() {
             <Text style={styles.sectionTitle}>Watchlist</Text>
           </View>
           <View style={styles.highlightGrid}>
-          <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
+         
           </View>
         </View>
       </ScrollView>
