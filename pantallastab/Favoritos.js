@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     borderBlockColor: 1,
-    borderColor: #
+    borderColor: '#482e1d',
   },
   title: {
     fontSize: 16,
