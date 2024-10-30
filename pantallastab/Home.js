@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FormSearch from '../componente/FormSearch';
+import { getNamesArray } from './../componente/selectedGenres';
 
 const wubiLogo = require('../assets/Wubi_logo3.png');
 
@@ -40,16 +41,19 @@ export default function Home({ navigation }) {
           <TouchableOpacity style={styles.modalBackground} onPress={toggleModal}>
             <View style={styles.modalContent}>
               <TouchableOpacity onPress={() => alert('Opción 1 seleccionada')}>
-                <Text style={styles.menuOption}>Opción 1</Text>
+                <Text style={styles.menuOption}>{getNamesArray()[0]}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => alert('Opción 2 seleccionada')}>
-                <Text style={styles.menuOption}>Opción 2</Text>
+                <Text style={styles.menuOption}>{getNamesArray()[1]}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
-                <Text style={styles.menuOption}>Opción 3</Text>
+                <Text style={styles.menuOption}>{getNamesArray()[2]}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => alert('Opción 4 seleccionada')}>
-                <Text style={styles.menuOption}>Opción 4</Text>
+                <Text style={styles.menuOption}>{getNamesArray()[3]}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => alert('Opción 5 seleccionada')}>
+                <Text style={styles.menuOption}>{getNamesArray()[4]}</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

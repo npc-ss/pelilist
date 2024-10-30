@@ -12,6 +12,7 @@ import {
 import { Button, Card, Image } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import { setNamesArray } from './../componente/selectedGenres';
 
 const { width } = Dimensions.get('window');
 const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6';
@@ -86,6 +87,9 @@ const MovieGenresScreen = () => {
     if (selectedGenres.length === 5) {
       navigation.navigate('MainTabs');
       console.log('Selected genres:', selectedGenres);
+      const namesArray = selectedGenres.map(genre => genre.name);
+      console.log(namesArray); 
+      setNamesArray(namesArray);
     } else {
       Alert.alert('Debes seleccionar 5 géneros');
     }
