@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  View, Text, TextInput, StyleSheet, Image, 
+  View, Text, StyleSheet, Image, 
   TouchableOpacity, Modal, ScrollView 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FormSearch from '../componente/FormSearch';
-import { getNamesArray } from './../componente/selectedGenres';
+import { db, auth } from '../credenciales';
+import { doc, getDoc } from 'firebase/firestore';
 
 const wubiLogo = require('../assets/Wubi_logo3.png');
 
 export default function Home({ navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [selectedGenres, setSelectedGenres] = useState([]);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -19,6 +21,28 @@ export default function Home({ navigation }) {
 
   const handleSearchResults = (searchResults) => {
     setMovies(searchResults);
+  };
+
+  
+  const fetchUser = async () => { 
+    const user = auth.currentUser ;
+    if (user) {
+      const docRef = doc(db, 'userGenres', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setSelectedGenres(data.genres); // Cargar géneros seleccionados
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUser(); 
+  }, []);
+
+  const handleGenreSelect = (genre) => {
+    navigation.navigate('modalGeneros', { genre }); // Navegar a la pantalla de detalles del género
+    toggleModal(); // Cerrar el modal
   };
 
   return (
@@ -40,21 +64,11 @@ export default function Home({ navigation }) {
         >
           <TouchableOpacity style={styles.modalBackground} onPress={toggleModal}>
             <View style={styles.modalContent}>
-              <TouchableOpacity onPress={() => alert('Opción 1 seleccionada')}>
-                <Text style={styles.menuOption}>{getNamesArray()[0]}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => alert('Opción 2 seleccionada')}>
-                <Text style={styles.menuOption}>{getNamesArray()[1]}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => alert('Opción 3 seleccionada')}>
-                <Text style={styles.menuOption}>{getNamesArray()[2]}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => alert('Opción 4 seleccionada')}>
-                <Text style={styles.menuOption}>{getNamesArray()[3]}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => alert('Opción 5 seleccionada')}>
-                <Text style={styles.menuOption}>{getNamesArray()[4]}</Text>
-              </TouchableOpacity>
+              {selectedGenres.map((genre) => (
+                <TouchableOpacity key={genre.id} onPress={() => handleGenreSelect(genre)}>
+                  <Text style={styles.menuOption}>{genre.name}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </TouchableOpacity>
         </Modal>

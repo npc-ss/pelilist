@@ -2,6 +2,7 @@ import React from 'react';
 import Login from './pantallas/Login';
 import Register from './pantallas/Register';
 import Preferencias from './pantallas/Preferencias';
+import modalGeneros from './pantallastab/modalGeneros';
 import Home from './pantallastab/Home';
 import Perfil from './pantallastab/Perfil';
 import Favoritos from './pantallastab/Favoritos';
@@ -27,6 +28,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="Preferencias" component={Preferencias} options={{ headerShown: false }}/>
       <AuthStack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
       <AuthStack.Screen name="MovieDetailsScreen" component={MovieDetailsScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name="modalGeneros" component={modalGeneros} options={{ headerShown: false }}/>
     </AuthStack.Navigator>
   );
 }

@@ -12,7 +12,8 @@ import {
 import { Button, Card, Image } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { setNamesArray } from './../componente/selectedGenres';
+import { db, auth } from '../credenciales';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 const { width } = Dimensions.get('window');
 const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6';
@@ -27,7 +28,13 @@ const MovieGenresScreen = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchGenres();
+    const fetchData = async () => {
+      await fetchGenres();
+      await checkUserGenres();
+      setLoading(false); // Establecer loading en false solo después de ambas operaciones
+    };
+  
+    fetchData();
   }, []);
 
   const fetchGenres = async () => {
@@ -42,10 +49,9 @@ const MovieGenresScreen = () => {
     } catch (error) {
       console.error('Error fetching genres:', error);
       setError('Failed to load genres. Please try again later.');
-    } finally {
-      setLoading(false);
     }
   };
+  
 
   const fetchMoviesForGenres = async (genres) => {
     const moviesPromises = genres.map(async (genre) => {
@@ -74,29 +80,49 @@ const MovieGenresScreen = () => {
     setMoviesByGenre(moviesByGenreMap);
   };
 
+  const checkUserGenres = async () => {
+    const user = auth.currentUser ;
+    if (user) {
+      const docRef = doc(db, 'userGenres', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        // Si el documento existe, cargar los géneros
+        const data = docSnap.data();
+        setSelectedGenres(data.genres);
+        navigation.navigate('MainTabs'); // Navegar directamente al modal
+      }
+    }
+  };
+
   const handleSelectGenre = (genre) => {
-    const isSelected = selectedGenres.find(selected => selected.id === genre.id);
+    const isSelected = selectedGenres.find((selected) => selected.id === genre.id);
     if (isSelected) {
-      setSelectedGenres(selectedGenres.filter(selected => selected.id !== genre.id));
+      setSelectedGenres(selectedGenres.filter((selected) => selected.id !== genre.id));
     } else if (selectedGenres.length < 5) {
       setSelectedGenres([...selectedGenres, { id: genre.id, name: genre.name }]);
     }
   };
 
-  const handleSaveGenres = () => {
+  const handleSaveGenres = async () => {
     if (selectedGenres.length === 5) {
-      navigation.navigate('MainTabs');
-      console.log('Selected genres:', selectedGenres);
-      const namesArray = selectedGenres.map(genre => genre.name);
-      console.log(namesArray); 
-      setNamesArray(namesArray);
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          await setDoc(doc(db, 'userGenres', user.uid), {
+            genres: selectedGenres,
+          });
+        }
+        navigation.navigate('MainTabs');
+      } catch (error) {
+        console.error('Error saving genres:', error);
+      }
     } else {
       Alert.alert('Debes seleccionar 5 géneros');
     }
   };
 
   const renderItem = ({ item }) => {
-    const isSelected = selectedGenres.find(selected => selected.id === item.id);
+    const isSelected = selectedGenres.find((selected) => selected.id === item.id);
     return (
       <View style={styles.genreContainer}>
         <TouchableOpacity onPress={() => handleSelectGenre(item)}>
@@ -111,7 +137,7 @@ const MovieGenresScreen = () => {
                     key={movie.id}
                     source={{ uri: posterUrl }}
                     style={styles.poster}
-                    onError={() => console.log(`Error loading image for movie ID: ${movie.id}` )}
+                    onError={() => console.log(`Error loading image for movie ID: ${movie.id}`)}
                     PlaceholderContent={<ActivityIndicator />}
                     resizeMode="cover"
                   />
@@ -164,7 +190,7 @@ const MovieGenresScreen = () => {
               Seleccione tus 5 géneros favoritos
             </Text>
             <Text style={styles.text}>
-              Seleccionados: {selectedGenres.map(genre => genre.name).join(', ')}
+              Seleccionados: {selectedGenres.map((genre) => genre.name).join(', ')}
             </Text>
           </View>
         </LinearGradient>
