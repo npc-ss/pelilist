@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
-import { db, auth } from '../credenciales'; // Asegúrate de que el path a credenciales.js es correcto
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db, auth } from '../credenciales';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -10,23 +10,20 @@ const Favoritos = () => {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    const fetchFavorites = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          const q = query(
-            collection(db, 'favoritos'),
-            where('userId', '==', user.uid)
-          );
-          const querySnapshot = await getDocs(q);
-          const fetchedFavorites = querySnapshot.docs.map((doc) => doc.data());
-          setFavorites(fetchedFavorites);
-        } catch (error) {
-          console.error('Error al obtener favoritos:', error);
-        }
-      }
-    };
-    fetchFavorites();
+    const user = auth.currentUser;
+    if (user) {
+      const q = query(
+        collection(db, 'favoritos'),
+        where('userId', '==', user.uid)
+      );
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const fetchedFavorites = snapshot.docs.map((doc) => doc.data());
+        setFavorites(fetchedFavorites);
+      });
+
+      return () => unsubscribe(); // Limpiar suscripción al desmontar el componente
+    }
   }, []);
 
   const renderFavorite = ({ item }) => (
@@ -41,10 +38,10 @@ const Favoritos = () => {
 
   return (
     <View style={styles.container}>
-          <View style={styles.titleContainer}>
-            <Icon name="heart" size={25} color={'#482e1d'} />
-            <Text style={styles.sectionTitle}>Favoritos</Text>
-          </View>
+      <View style={styles.titleContainer}>
+        <Icon name="heart" size={25} color={'#482e1d'} />
+        <Text style={styles.sectionTitle}>Favoritos</Text>
+      </View>
       <FlatList
         data={favorites}
         keyExtractor={(item) => item.movieId.toString()}
@@ -64,13 +61,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0DAAE',
     padding: 20,
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#482e1d',
-    paddingTop: 40,
-  },
   grid: {
     justifyContent: 'space-between',
   },
@@ -84,7 +74,6 @@ const styles = StyleSheet.create({
     height: 225,
     borderRadius: 10,
     marginBottom: 10,
-    borderBlockColor: 5,
     borderColor: '#482e1d',
     borderWidth: 5,
   },
