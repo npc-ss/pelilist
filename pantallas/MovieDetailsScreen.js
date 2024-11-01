@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { db, auth } from '../credenciales'; // Importa Firestore y Auth
+import { db, auth } from '../credenciales';
 import { collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
 const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -12,9 +12,50 @@ const MovieDetailsScreen = ({ route }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
+  const [inWatchlist, setInWatchlist] = useState(false); // Estado separado para watchlist
 
   useEffect(() => {
-    // Verifica si la película ya está en favoritos al cargar la pantalla
+    const fetchComments = async () => {
+      const q = query(collection(db, 'comments'), where('movieId', '==', movie.id));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const commentsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setComments(commentsData);
+      });
+      return unsubscribe;
+    };
+    fetchComments();
+  }, [movie.id]);
+
+  const handleAddComment = async () => {
+    const user = auth.currentUser;
+    if (user && comment.trim()) {
+      try {
+        await addDoc(collection(db, 'comments'), {
+          userId: user.uid,
+          movieId: movie.id,
+          text: comment,
+          timestamp: new Date()
+        });
+        setComment('');
+      } catch (error) {
+        console.error('Error al agregar comentario:', error);
+      }
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteDoc(doc(db, 'comments', commentId));
+    } catch (error) {
+      console.error('Error al eliminar comentario:', error);
+    }
+  };
+
+
+  useEffect(() => {
     const checkFavorite = async () => {
       const user = auth.currentUser;
       if (user) {
@@ -35,7 +76,6 @@ const MovieDetailsScreen = ({ route }) => {
     if (user) {
       try {
         if (!liked) {
-          // Agrega la película a favoritos
           await addDoc(collection(db, 'favoritos'), {
             userId: user.uid,
             movieId: movie.id,
@@ -44,7 +84,6 @@ const MovieDetailsScreen = ({ route }) => {
             timestamp: new Date(),
           });
         } else {
-          // Elimina la película de favoritos
           const q = query(
             collection(db, 'favoritos'),
             where('userId', '==', user.uid),
@@ -60,10 +99,50 @@ const MovieDetailsScreen = ({ route }) => {
     }
   };
 
-  const handleAddComment = () => {
-    setComments([...comments, { text: comment }]);
-    setComment('');
+  useEffect(() => {
+    const checkWatchlist = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const q = query(
+          collection(db, 'watchlist'),
+          where('userId', '==', user.uid),
+          where('movieId', '==', movie.id)
+        );
+        const querySnapshot = await getDocs(q);
+        setInWatchlist(!querySnapshot.empty); // Usar estado inWatchlist
+      }
+    };
+    checkWatchlist();
+  }, []);
+
+  const handleToggleWatchlist = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        if (!inWatchlist) {
+          await addDoc(collection(db, 'watchlist'), {
+            userId: user.uid,
+            movieId: movie.id,
+            title: movie.title,
+            poster_path: movie.poster_path,
+            timestamp: new Date(),
+          });
+        } else {
+          const q = query(
+            collection(db, 'watchlist'),
+            where('userId', '==', user.uid),
+            where('movieId', '==', movie.id)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => deleteDoc(doc.ref));
+        }
+        setInWatchlist(!inWatchlist);
+      } catch (error) {
+        console.error('Error al manejar watchlist:', error);
+      }
+    }
   };
+
 
   const handleRating = (value) => {
     setRating(value);
@@ -99,8 +178,16 @@ const MovieDetailsScreen = ({ route }) => {
 
       <View style={styles.commentsSection}>
         <Text style={styles.sectionTitle}>Comentarios</Text>
-        {comments.map((c, index) => (
-          <Text key={index} style={styles.comment}>{c.text}</Text>
+        {comments.map((c) => (
+          <View key={c.id} style={styles.commentContainer}>
+            <Text style={styles.commentUser}>{c.userId}</Text>
+            <Text style={styles.comment}>{c.text}</Text>
+            {auth.currentUser && auth.currentUser.uid === c.userId && (
+              <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
+                <Icon name="trash" size={20} color="#5e412f" />
+              </TouchableOpacity>
+            )}
+          </View>
         ))}
         <TextInput
           style={styles.commentInput}
@@ -109,7 +196,7 @@ const MovieDetailsScreen = ({ route }) => {
           onChangeText={setComment}
         />
         <TouchableOpacity onPress={handleAddComment} style={styles.commentButton}>
-          <Text style={styles.commentButtonText}>Hecho</Text>
+          <Text style={styles.commentButtonText}>Enviar</Text>
         </TouchableOpacity>
       </View>
 
@@ -117,12 +204,17 @@ const MovieDetailsScreen = ({ route }) => {
         <TouchableOpacity onPress={handleToggleFavorite}>
           <Icon name="heart" size={50} color={liked ? '#5e412f' : '#A3966A'} />
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleToggleWatchlist}>
+          <Icon name="time-outline" size={50} color={inWatchlist ? '#5e412f' : '#A3966A'} />
+        </TouchableOpacity>
       </View>
+
     </ScrollView>
   );
 };
 
 export default MovieDetailsScreen;
+
 
 const styles = StyleSheet.create({
   container: {

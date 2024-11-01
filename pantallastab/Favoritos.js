@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 import { db, auth } from '../credenciales'; // Asegúrate de que el path a credenciales.js es correcto
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -30,7 +31,7 @@ const Favoritos = () => {
 
   const renderFavorite = ({ item }) => (
     <View style={styles.gridItem}>
-      <Image
+      <Image 
         source={{ uri: `${BASE_IMAGE_URL}${item.poster_path}` }}
         style={styles.poster}
       />
@@ -40,7 +41,10 @@ const Favoritos = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Favoritos</Text>
+          <View style={styles.titleContainer}>
+            <Icon name="heart" size={25} color={'#482e1d'} />
+            <Text style={styles.sectionTitle}>Favoritos</Text>
+          </View>
       <FlatList
         data={favorites}
         keyExtractor={(item) => item.movieId.toString()}
@@ -80,13 +84,27 @@ const styles = StyleSheet.create({
     height: 225,
     borderRadius: 10,
     marginBottom: 10,
-    borderBlockColor: 1,
+    borderBlockColor: 5,
     borderColor: '#482e1d',
+    borderWidth: 5,
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#482e1d',
+  },
+  titleContainer: {
+    paddingTop: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingBottom: 5,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#5e412f',
+    marginLeft: 5, 
   },
 });
