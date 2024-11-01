@@ -89,7 +89,7 @@ const MovieGenresScreen = () => {
         // Si el documento existe, cargar los géneros
         const data = docSnap.data();
         setSelectedGenres(data.genres);
-        navigation.navigate('MainTabs'); // Navegar directamente al modal
+        navigation.replace('MainTabs'); // Navegar directamente al modal
       }
     }
   };
@@ -112,7 +112,7 @@ const MovieGenresScreen = () => {
             genres: selectedGenres,
           });
         }
-        navigation.navigate('MainTabs');
+        navigation.replace('MainTabs');
       } catch (error) {
         console.error('Error saving genres:', error);
       }
