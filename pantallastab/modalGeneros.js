@@ -80,7 +80,7 @@ const ModalGeneros = ({ route }) => {
         data={movies}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        numColumns={2} // Dos columnas para el grid
+        numColumns={3} 
         contentContainerStyle={styles.movieGrid}
       />
     </View>
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0daae',
     padding: 20,
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   movieCard: {
-    width: '100%', // Dos columnas
+    width: '100%',
     marginBottom: 10,
     backgroundColor: '#482e1d',
     borderRadius: 5,
