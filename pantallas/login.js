@@ -23,7 +23,7 @@ function Login(props) {
             await signInWithEmailAndPassword(auth, email, password)
             Alert.alert('Iniciando sesión','Accediendo...')
             console.log(props);
-            props.navigation.navigate('Preferencias')
+            props.navigation.replace('Preferencias')
         }   
         catch (error) {
             console.log(error);

@@ -1,52 +1,65 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-
+import appFirebase, { db } from '../credenciales'; // Importa Firestore
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Perfil() {
   const navigation = useNavigation();
-  const user = {
-    name: "zzair",
-    seguidores: 4,
-    seguidos: 18,
-    age: 18,
-    social: "zair_bz",
-    description: "asdadasd",
-    favoritos: Array(8).fill(0), 
+  const [user, setUser] = useState(null); // Estado para almacenar los datos del usuario
+
+  const auth = getAuth(appFirebase);
+  const currentUser = auth.currentUser;
+
+  // Función para obtener los datos del usuario desde Firestore
+  const fetchUserData = async () => {
+    if (currentUser) {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          setUser(userDoc.data());
+        } else {
+          console.log('No se encontraron datos para este usuario');
+        }
+      } catch (error) {
+        console.log('Error al obtener los datos del usuario:', error);
+      }
+    }
   };
+
+  useEffect(() => {
+    fetchUserData(); // Llamar a la función al montar el componente
+  }, []);
 
   return (
     <View style={styles.container}>
       <ScrollView>
-      <View style={styles.header}>
-        <Image style={styles.avatar} source={{ uri:'https://acortar.link/t38bDl'}} />
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.followers}>
-          {user.seguidores} Seguidores | {user.seguidos} Seguidos
-        </Text>
-        <Text style={styles.info}>
-          {user.age}{user.pronouns} | {user.social}
-        </Text>
-        <Text style={styles.description}>
-          {user.description}
-        </Text>
+        <View style={styles.header}>
+          <Image style={styles.avatar} source={{ uri:'https://acortar.link/t38bDl'}} />
+          <Text style={styles.name}>{user ? user.username : "Cargando..."}</Text> {/* Muestra el nombre del usuario */}
+          <Text style={styles.followers}>
+            {user ? `${user.seguidores} Seguidores | ${user.seguidos} Seguidos` : ''}
+          </Text>
+          <Text style={styles.info}>
+            {user ? `${user.age} años | ${user.social}` : ''}
+          </Text>
+          <Text style={styles.description}>
+            {user ? user.description : ''}
+          </Text>
 
-        {/* Botón de Configuración */}
-        <TouchableOpacity style={styles.configButton} onPress={() => navigation.navigate('Configuraciones')}>
-          <Text style={styles.configButtonText}>Configuraciones</Text>
-        </TouchableOpacity>
+          {/* Botón de Configuración */}
+          <TouchableOpacity style={styles.configButton} onPress={() => navigation.navigate('Configuraciones')}>
+            <Text style={styles.configButtonText}>Configuraciones</Text>
+          </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>Favoritos</Text>
-        <View style={styles.highlightGrid}>
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-      </View>
-
-      </View>
+          <Text style={styles.sectionTitle}>Favoritos</Text>
+          <View style={styles.highlightGrid}>
+            {Array(6).fill().map((_, index) => (
+              <View key={index} style={styles.box} />
+            ))}
+          </View>
+        </View>
       </ScrollView>
     </View>
   );

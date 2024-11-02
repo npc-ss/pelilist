@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Alert} from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Image, Alert } from 'react-native';
 import Boton from "../componente/Boton";
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,22 +9,36 @@ const logoImage = require('../assets/sobre.png');
 const wubiLogo = require('../assets/Wubi_logo3.png');
 const candadoImage = require('../assets/candado.png');
 
-import appFirebase from '../credenciales';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
-const auth = getAuth(appFirebase)
+import appFirebase, { db } from '../credenciales'; // Asegúrate de importar db
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore'; // Importar funciones de Firestore
+
+const auth = getAuth(appFirebase);
 
 function Register() {
+    const [username, setUsername] = useState(''); // Estado para el nombre de usuario
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState ()
+    const navigation = useNavigation();
 
-    const registro = async()=>{
+    const registro = async () => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password)
-            Alert.alert('La cuenta se creó con exito')
-            navigation.navigate('Login')
-        }   
-        catch (error) {
+            // Crear usuario con email y contraseña
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Guardar el nombre de usuario en Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                username: username, // Nombre de usuario ingresado
+                email: email,
+                createdAt: new Date(),
+            });
+
+            Alert.alert('La cuenta se creó con éxito');
+            console.log("Navegando a la pantalla de Login");
+            navigation.navigate('Login');
+        } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 Alert.alert('Error', 'La cuenta ya existe');
             } else {
@@ -34,13 +48,20 @@ function Register() {
         }
     };
 
-
-
-    const navigation = useNavigation();
     return (
         <ImageBackground source={backgroundImage} style={styles.container}>
             <View style={styles.overlay}>
                 <Image style={styles.image} source={wubiLogo} />
+
+                <View style={styles.searchSection}>
+                    <Image style={styles.iconInsideInput} source={logoImage} />
+                    <TextInput
+                        placeholder="Nombre de usuario"
+                        style={styles.input}
+                        placeholderTextColor="#F0DAAE"
+                        onChangeText={setUsername}
+                    />
+                </View>
                 
                 <View style={styles.searchSection}>
                     <Image style={styles.iconInsideInput} source={logoImage} />
@@ -48,7 +69,7 @@ function Register() {
                         placeholder="Email"
                         style={styles.input}
                         placeholderTextColor="#F0DAAE"
-                        onChangeText={(text)=>setEmail(text)}
+                        onChangeText={setEmail}
                     />
                 </View>
 
@@ -58,12 +79,12 @@ function Register() {
                         style={styles.input}
                         placeholder="Contraseña"
                         placeholderTextColor="#F0DAAE"
-                        onChangeText={(text)=>setPassword(text)}
+                        onChangeText={setPassword}
                         secureTextEntry={true}
                     />
                 </View>
                 
-                <Boton onPress={registro}/>
+                <Boton onPress={registro} />
                 <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.registerText}>¿Ya tenés una cuenta? Iniciá sesión</Text>
@@ -113,26 +134,5 @@ const styles = StyleSheet.create({
     },
     searchSection: {
         flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10, 
-        position: 'relative', 
     },
-    iconInsideInput: {
-        position: 'absolute', 
-        bottom: 10,
-        left: -4,
-        width: 40,
-        height: 40,
-        resizeMode: 'contain',
-        zIndex: 1,
-    },
-    iconInsideInput2: {
-        position: 'absolute', 
-        bottom: 14,
-        left: -6,
-        width: 40,
-        height: 40,
-        resizeMode: 'contain',
-        zIndex: 1,
-    },
-});
+})
