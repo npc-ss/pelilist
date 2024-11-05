@@ -1,54 +1,98 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import { getAuth } from 'firebase/auth';
+import { doc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import appFirebase, { db, storage } from '../credenciales'; // Importa Firestore y Storage
 
-
-
-export default function Perfil() {
+export default function Configuraciones() {
   const navigation = useNavigation();
-  const user = {
-    name: "zzair",
-    seguidores: 4,
-    seguidos: 18,
-    age: 18,
-    social: "zair_bz",
-    description: "asdadasd",
-    favoritos: Array(8).fill(0), 
+  const auth = getAuth(appFirebase);
+  const currentUser = auth.currentUser;
+
+  const [age, setAge] = useState('');
+  const [description, setDescription] = useState('');
+  const [profileImage, setProfileImage] = useState(currentUser?.photoURL || null);
+
+  const updateUserData = async () => {
+    if (currentUser) {
+      try {
+        const userRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userRef, { age, description });
+        Alert.alert('Actualización', 'Datos actualizados con éxito.');
+        navigation.goBack();
+      } catch (error) {
+        console.log('Error al actualizar los datos:', error);
+        Alert.alert('Error', 'Hubo un problema al actualizar los datos.');
+      }
+    }
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.uri);
+      uploadImage(result.uri);
+    }
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const imageRef = ref(storage, `profilePictures/${currentUser.uid}.jpg`);
+      await uploadBytes(imageRef, blob);
+      const downloadURL = await getDownloadURL(imageRef);
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        profilePicture: downloadURL,
+      });
+      setProfileImage(downloadURL);
+    } catch (error) {
+      console.error('Error uploading image: ', error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-      <View style={styles.header}>
-        <Image style={styles.avatar} source={{ uri:'https://acortar.link/t38bDl'}} />
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.followers}>
-          {user.seguidores} Seguidores | {user.seguidos} Seguidos
-        </Text>
-        <Text style={styles.info}>
-          {user.age}{user.pronouns} | {user.social}
-        </Text>
-        <Text style={styles.description}>
-          {user.description}
-        </Text>
+      <Text style={styles.title}>Configuraciones</Text>
 
-        {/* Botón de Configuración */}
-        <TouchableOpacity style={styles.configButton} onPress={() => navigation.navigate('Configuraciones')}>
-          <Text style={styles.configButtonText}>Configuraciones</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={pickImage}>
+        <Text style={styles.changePhotoText}>Cambiar Imagen de Perfil</Text>
+      </TouchableOpacity>
+      {profileImage && (
+        <Image source={{ uri: profileImage }} style={styles.profileImage} />
+      )}
 
-        <Text style={styles.sectionTitle}>Favoritos</Text>
-        <View style={styles.highlightGrid}>
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-      </View>
+      <Text style={styles.label}>Edad</Text>
+      <TextInput
+        style={styles.input}
+        value={age}
+        onChangeText={text => setAge(text)}
+        keyboardType='numeric'
+        maxLength={3}
+      />
 
-      </View>
-      </ScrollView>
+      <Text style={styles.label}>Descripción</Text>
+      <TextInput
+        style={styles.textArea}
+        value={description}
+        onChangeText={text => setDescription(text)}
+        maxLength={100}
+        multiline
+        numberOfLines={4}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={updateUserData}>
+        <Text style={styles.buttonText}>Guardar Cambios</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -57,76 +101,64 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0DAAE',
-    paddingTop: 40,
+    padding: 20,
   },
-  header: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
-    marginBottom: 5,
-  },
-  name: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#482E1D',
-    paddingBottom: 5,
-  },
-  followers: {
-    fontSize: 14,
-    color: '#482E1D',
-  },
-  info: {
-    fontSize: 14,
-    color: '#482E1D',
-    marginVertical: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: '#482E1D',
-    marginBottom: 15,
+    marginBottom: 20,
     textAlign: 'center',
-    paddingHorizontal: 20,
   },
-  configButton: {
-    backgroundColor: '#482e1d',
+  changePhotoText: {
+    color: '#007BFF',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    color: '#482E1D',
+    marginBottom: 5,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderColor: '#482E1D',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginBottom: 15,
+    color: '#482E1D',
+  },
+  textArea: {
+    backgroundColor: '#fff',
+    borderColor: '#482E1D',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    height: 100,
+    textAlignVertical: 'top',
+    marginBottom: 15,
+    color: '#482E1D',
+  },
+  button: {
+    backgroundColor: '#482E1D',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginBottom: 20,
+    alignItems: 'center',
   },
-  configButtonText: {
+  buttonText: {
     color: '#F0DAAE',
     fontWeight: 'bold',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#5e412f',
-    paddingBottom: 10,
-  },
-  highlightGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 20,
-    backgroundColor: '#A3966A',
-    paddingTop: 20,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 30,
-  },
-  box: {
-    width: '30%',
-    height: 150,
-    backgroundColor: '#482e1d',
-    marginBottom: 5,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    borderColor: '#f0daae',
   },
 });

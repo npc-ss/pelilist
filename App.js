@@ -5,6 +5,7 @@ import Preferencias from './pantallas/Preferencias';
 import modalGeneros from './pantallastab/modalGeneros';
 import Home from './pantallastab/Home';
 import Perfil from './pantallastab/Perfil';
+import Configuraciones from './pantallastab/Configuraciones'
 import Favoritos from './pantallastab/Favoritos';
 import Watchlist from './pantallastab/Watchlist';
 import { NavigationContainer } from '@react-navigation/native';
@@ -29,6 +30,7 @@ function AuthStackScreen() {
       <AuthStack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
       <AuthStack.Screen name="MovieDetailsScreen" component={MovieDetailsScreen} options={{ headerShown: false }} />
       <AuthStack.Screen name="modalGeneros" component={modalGeneros} options={{ headerShown: false }}/>
+      <AuthStack.Screen name="Configuraciones" component={Configuraciones} options={{ headerShown: false }}/>
     </AuthStack.Navigator>
   );
 }
