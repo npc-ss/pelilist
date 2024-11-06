@@ -13,6 +13,7 @@ const MovieDetailsScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
   const [inWatchlist, setInWatchlist] = useState(false); // Estado separado para watchlist
+  const [user, setUser] = useState(null); // Para almacenar los datos del usuario
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -29,17 +30,45 @@ const MovieDetailsScreen = ({ route }) => {
     fetchComments();
   }, [movie.id]);
 
+  // Obtener los datos del usuario actual
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      const unsubscribeUser = onSnapshot(userDocRef, (doc) => {
+        if (doc.exists()) {
+          setUser(doc.data());
+        }
+      });
+
+      return () => {
+        unsubscribeUser();
+      };
+    }
+  }, []);
+
   const handleAddComment = async () => {
     const user = auth.currentUser;
     if (user && comment.trim()) {
       try {
-        await addDoc(collection(db, 'comments'), {
-          userId: user.uid,
-          movieId: movie.id,
-          text: comment,
-          timestamp: new Date()
-        });
-        setComment('');
+        // Obtener el username del usuario actual desde Firestore
+        const userDocRef = doc(db, 'users', user.uid); // Ajusta el path si es diferente
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const username = userDoc.data().username;
+
+          // Guarda el comentario junto con el username
+          await addDoc(collection(db, 'comments'), {
+            username: username, // Agregar el nombre de usuario aquí
+            userId: user.uid,
+            movieId: movie.id,
+            text: comment,
+            timestamp: new Date()
+          });
+
+          setComment(''); // Limpiar el campo de comentario
+        }
       } catch (error) {
         console.error('Error al agregar comentario:', error);
       }
@@ -53,7 +82,6 @@ const MovieDetailsScreen = ({ route }) => {
       console.error('Error al eliminar comentario:', error);
     }
   };
-
 
   useEffect(() => {
     const checkFavorite = async () => {
@@ -143,7 +171,6 @@ const MovieDetailsScreen = ({ route }) => {
     }
   };
 
-
   const handleRating = (value) => {
     setRating(value);
   };
@@ -180,7 +207,7 @@ const MovieDetailsScreen = ({ route }) => {
         <Text style={styles.sectionTitle}>Comentarios</Text>
         {comments.map((c) => (
           <View key={c.id} style={styles.commentContainer}>
-            <Text style={styles.commentUser}>{c.userId}</Text>
+            <Text style={styles.sectionTitle}>{c.username || 'Usuario Anónimo'}</Text> {/* Mostrar el username */}
             <Text style={styles.comment}>{c.text}</Text>
             {auth.currentUser && auth.currentUser.uid === c.userId && (
               <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
@@ -208,13 +235,11 @@ const MovieDetailsScreen = ({ route }) => {
           <Icon name="time-outline" size={50} color={inWatchlist ? '#5e412f' : '#A3966A'} />
         </TouchableOpacity>
       </View>
-
     </ScrollView>
   );
 };
 
 export default MovieDetailsScreen;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -243,8 +268,6 @@ const styles = StyleSheet.create({
     marginTop: 300,
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#482e1d',
-    marginBottom: 5,
   },
   info: {
     fontSize: 14,
