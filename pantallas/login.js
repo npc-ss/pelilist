@@ -59,7 +59,6 @@ function Login(props) {
                 </View>
                 
                 <Boton onPress={logueo}/>
-                <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                     <Text style={styles.registerText}>¿No tenés una cuenta? Registrate</Text>
                 </TouchableOpacity>
