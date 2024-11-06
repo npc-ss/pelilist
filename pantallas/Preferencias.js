@@ -122,33 +122,38 @@ const MovieGenresScreen = () => {
   };
 
   const renderItem = ({ item }) => {
-    const isSelected = selectedGenres.find((selected) => selected.id === item.id); // Verifica si el género está seleccionado.
+    const isSelected = selectedGenres.find((selected) => selected.id === item.id); 
+  
     return (
       <View style={styles.genreContainer}>
-        <TouchableOpacity onPress={() => handleSelectGenre(item)}> {/* Maneja la selección del género. */}
-          <Card containerStyle={[styles.card, isSelected && styles.selectedCard]}> {/* Estilo de la tarjeta, cambia si está seleccionada. */}
-            <Card.Title>{item.name}</Card.Title> {/* Muestra el nombre del género. */}
+        <TouchableOpacity onPress={() => handleSelectGenre(item)}>
+          <Card containerStyle={[styles.card, isSelected && styles.selectedCard]}>
+            <Card.Title>
+              <Text>{item.name || 'Género Desconocido'}</Text> {/* Asegura que item.name siempre sea texto */}
+            </Card.Title>
             <Card.Divider />
             <View style={styles.posterContainer}>
-              {moviesByGenre[item.id] && moviesByGenre[item.id].length > 0 && moviesByGenre[item.id].slice(0, 4).map((movie) => {
-                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; 
-                return (
-                  <Image
-                    key={movie.id}
-                    source={{ uri: posterUrl }} 
-                    style={styles.poster}
-                    onError={() => console.log(`Error loading image for movie ID: ${movie.id}`)} 
-                    PlaceholderContent={<ActivityIndicator />} 
-                    resizeMode="cover"
-                  />
-                );
-              })}
+              {moviesByGenre[item.id] && moviesByGenre[item.id].length > 0 &&
+                moviesByGenre[item.id].slice(0, 4).map((movie) => {
+                  const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                  return (
+                    <Image
+                      key={movie.id}
+                      source={{ uri: posterUrl }}
+                      style={styles.poster}
+                      onError={() => console.log(`Error loading image for movie ID: ${movie.id}`)}
+                      PlaceholderContent={<ActivityIndicator />}
+                      resizeMode="cover"
+                    />
+                  );
+                })}
             </View>
           </Card>
         </TouchableOpacity>
       </View>
     );
   };
+  
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />; 
@@ -166,7 +171,7 @@ const MovieGenresScreen = () => {
     <View style={styles.container}>
       <FlatList
         data={genres} 
-        renderItem={renderItem} 
+        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()} 
         contentContainerStyle={{ paddingBottom: 150 }} 
       />
@@ -203,6 +208,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0daae', 
+    paddingTop: 40,
   },
   genreContainer: {
     marginBottom: 10,
