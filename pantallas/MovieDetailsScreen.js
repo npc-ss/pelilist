@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { db, auth } from '../credenciales';
-import { collection, addDoc, query, where, getDocs, deleteDoc, onSnapshot, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, deleteDoc, onSnapshot, doc, getDoc } from 'firebase/firestore';
 
 const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -204,28 +204,32 @@ const MovieDetailsScreen = ({ route }) => {
       </View>
 
       <View style={styles.commentsSection}>
-        <Text style={styles.sectionTitle}>Comentarios</Text>
-        {comments.map((c) => (
-          <View key={c.id} style={styles.commentContainer}>
-            <Text style={styles.sectionTitle}>{c.username || 'Usuario Anónimo'}</Text> {/* Mostrar el username */}
-            <Text style={styles.comment}>{c.text}</Text>
-            {auth.currentUser && auth.currentUser.uid === c.userId && (
-              <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
-                <Icon name="trash" size={20} color="#5e412f" />
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-        <TextInput
-          style={styles.commentInput}
-          placeholder="Escribe tu opinión..."
-          value={comment}
-          onChangeText={setComment}
-        />
-        <TouchableOpacity onPress={handleAddComment} style={styles.commentButton}>
-          <Text style={styles.commentButtonText}>Enviar</Text>
-        </TouchableOpacity>
+  <Text style={styles.sectionTitle}>Comentarios</Text>
+  {comments.length > 0 ? (
+    comments.map((c) => (
+      <View key={c.id} style={styles.commentContainer}>
+        <Text style={styles.sectionTitle}>{c.username || 'Usuario Anónimo'}</Text>
+        <Text style={styles.comment}>{c.text || 'Comentario vacío'}</Text>
+        {auth.currentUser  && auth.currentUser .uid === c.userId && (
+          <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
+            <Icon name="trash" size={20} color="#5e412f" />
+          </TouchableOpacity>
+        )}
       </View>
+    ))
+  ) : (
+    <Text>No hay comentarios.</Text> // Handle empty comments
+  )}
+  <TextInput
+    style={styles.commentInput}
+    placeholder="Escribe tu opinión..."
+    value={comment}
+    onChangeText={setComment}
+  />
+  <TouchableOpacity onPress={handleAddComment} style={styles.commentButton}>
+    <Text style={styles.commentButtonText}>Enviar</Text>
+  </TouchableOpacity>
+</View>
 
       <View style={styles.actionButtons}>
         <TouchableOpacity onPress={handleToggleFavorite}>
