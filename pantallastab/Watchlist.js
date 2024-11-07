@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import { db, auth } from '../credenciales';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native'; // Importa el hook para la navegación.
 
-const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6'; 
+const BASE_URL = 'https://api.themoviedb.org/3';
+const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500'; 
 
 const Watchlist = () => {
   const [watchlist, setWatchlist] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    const user = auth.currentUser;
+    const user = auth.currentUser ;
     if (user) {
       const q = query(
         collection(db, 'watchlist'),
@@ -22,11 +29,37 @@ const Watchlist = () => {
         setWatchlist(fetchedWatchlist);
       });
 
-      return () => unsubscribe();
+      return () => unsubscribe(); 
     }
   }, []);
 
+  useEffect(() => {
+    if (watchlist.length > 0) {
+      fetchMoviesByWatchlist();
+    }
+  }, [watchlist]);
+
+  const fetchMoviesByWatchlist = async () => {
+    setError(null); // Reset error state
+
+    try {
+      const moviePromises = watchlist.map(watchlist => 
+        axios.get(`${BASE_URL}/movie/${watchlist.movieId}?api_key=${API_KEY}&language=es-ES`)
+      );
+
+      const responses = await Promise.all(moviePromises);
+      const moviesData = responses.map(response => response.data);
+      setMovies(moviesData); // Set the movies data
+    } catch (error) {
+      console.error("Error fetching movies: ", error);
+      setError("Error fetching movies. Please try again.");
+    }
+  };
+
   const renderWatchlist = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('MovieDetailsScreen', { movie: item })} 
+    >
     <View style={styles.gridItem}>
       <Image 
         source={{ uri: `${BASE_IMAGE_URL}${item.poster_path}` }}
@@ -34,7 +67,16 @@ const Watchlist = () => {
       />
       <Text style={styles.title}>{item.title}</Text>
     </View>
+    </TouchableOpacity>
   );
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -43,8 +85,8 @@ const Watchlist = () => {
         <Text style={styles.sectionTitle}>Watchlist</Text>
       </View>
       <FlatList
-        data={watchlist}
-        keyExtractor={(item) => item.movieId.toString()}
+        data={movies}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderWatchlist}
         numColumns={2}
         contentContainerStyle={styles.grid}
@@ -95,5 +137,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#5e412f',
     marginLeft: 5, 
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
   },
 });
