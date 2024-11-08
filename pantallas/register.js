@@ -85,7 +85,6 @@ function Register() {
                 </View>
                 
                 <Boton onPress={registro} />
-                <Text style={styles.registerText}>¿Olvidaste tu contraseña?</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.registerText}>¿Ya tenés una cuenta? Iniciá sesión</Text>
                 </TouchableOpacity>
@@ -134,5 +133,23 @@ const styles = StyleSheet.create({
     },
     searchSection: {
         flexDirection: 'row',
+    },
+    iconInsideInput: {
+        position: 'absolute', 
+        bottom: 10,
+        left: -4,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        zIndex: 1,
+    },
+    iconInsideInput2: {
+        position: 'absolute', 
+        bottom: 14,
+        left: -6,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain',
+        zIndex: 1,
     },
 })
