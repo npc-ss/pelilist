@@ -10,16 +10,16 @@ import appFirebase, { db, storage } from '../credenciales'; // Importa Firestore
 export default function Configuraciones() {
   const navigation = useNavigation();
   const auth = getAuth(appFirebase);
-  const currentUser = auth.currentUser;
+  const currentUser  = auth.currentUser ;
 
   const [age, setAge] = useState('');
   const [description, setDescription] = useState('');
-  const [profileImage, setProfileImage] = useState(currentUser?.photoURL || null);
+  const [profileImage, setProfileImage] = useState(currentUser ?.photoURL || null);
 
   const updateUserData = async () => {
-    if (currentUser) {
+    if (currentUser ) {
       try {
-        const userRef = doc(db, 'users', currentUser.uid);
+        const userRef = doc(db, 'users', currentUser .uid);
         await updateDoc(userRef, { age, description });
         Alert.alert('Actualización', 'Datos actualizados con éxito.');
         navigation.goBack();
@@ -30,33 +30,37 @@ export default function Configuraciones() {
     }
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const imageRef = ref(storage, `images/${currentUser .uid}`);
 
-    if (!result.canceled) {
-      setProfileImage(result.uri);
-      uploadImage(result.uri);
+    try {
+      await uploadBytes(imageRef, blob);
+      const downloadURL = await getDownloadURL(imageRef);
+      setProfileImage(downloadURL); // Update the profile image state
+      Alert.alert('Éxito', 'Imagen subida correctamente.');
+    } catch (error) {
+      console.log('Error al subir la imagen:', error);
+      Alert.alert('Error', 'Hubo un problema al subir la imagen.');
     }
   };
 
-  const uploadImage = async (uri) => {
-    try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const imageRef = ref(storage, `profilePictures/${currentUser.uid}.jpg`);
-      await uploadBytes(imageRef, blob);
-      const downloadURL = await getDownloadURL(imageRef);
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        profilePicture: downloadURL,
+  const pickImage = async () => {
+    const resultPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (resultPermission.granted) {
+      const resultImagePicker = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
       });
-      setProfileImage(downloadURL);
-    } catch (error) {
-      console.error('Error uploading image: ', error);
+
+      if (!resultImagePicker.cancelled) {
+        const imageUri = resultImagePicker.uri;
+        await uploadImage(imageUri);
+      }
+    } else {
+      Alert.alert('Permiso denegado', 'Necesitas permitir el acceso a la galería.');
     }
   };
 
@@ -65,7 +69,7 @@ export default function Configuraciones() {
       <Text style={styles.title}>Configuraciones</Text>
 
       <TouchableOpacity onPress={pickImage}>
-        <Text style={styles.changePhotoText}>Cambiar Imagen de Perfil</Text>
+        <Text style={styles.changePhotoText}>Seleccionar una imagen de perfil</Text>
       </TouchableOpacity>
       {profileImage && (
         <Image source={{ uri: profileImage }} style={styles.profileImage} />

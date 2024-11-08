@@ -7,7 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 const wubiLogo = require('../assets/Wubi_logo3.png');
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, profileImage }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [movies, setMovies] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
@@ -18,11 +18,11 @@ export default function Home({ navigation }) {
   };
 
   const handleSearchResults = (searchResults) => {
-    setMovies(searchResults); // Actualiza movies solo si hay resultados de búsqueda
+    setMovies(searchResults);
   };
 
-  const fetchUser = async () => {
-    const user = auth.currentUser;
+  const fetchUser  = async () => {
+    const user = auth.currentUser ;
     if (user) {
       const docRef = doc(db, 'userGenres', user.uid);
       const docSnap = await getDoc(docRef);
@@ -33,7 +33,6 @@ export default function Home({ navigation }) {
     }
   };
 
-  // Fetch de las películas lanzadas este mes
   const fetchLatestMovies = async () => {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/now_playing?api_key=b2003f3925acf5cd85862955fc85e7b6&language=en-US&page=1`
@@ -43,8 +42,8 @@ export default function Home({ navigation }) {
   };
 
   useEffect(() => {
-    fetchUser();
-    fetchLatestMovies(); // Cargar las últimas películas al cargar la pantalla
+    fetchUser ();
+    fetchLatestMovies();
   }, []);
 
   const handleGenreSelect = (genre) => {
@@ -54,6 +53,11 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* Profile Image */}
+      {profileImage && (
+        <Image source={{ uri: profileImage }} style={styles.profileImage} />
+      )}
+
       {/* Navbar */}
       <ScrollView>
         <View style={styles.navbar}>
@@ -85,7 +89,7 @@ export default function Home({ navigation }) {
           <FormSearch onSearchResults={handleSearchResults} />
         </View>
 
-        {/* Condicional de visualización */}
+        {/* Conditional Display */}
         <Text style={styles.sectionTitle}>
           {movies.length > 0 ? 'Resultados de la búsqueda' : 'Recomendaciones del mes'}
         </Text>
@@ -115,6 +119,111 @@ export default function Home({ navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create ({
+  container: {
+    flex: 1,
+    backgroundColor: '#F0daae',
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  navbar: {
+    paddingTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#a3966a',
+    paddingBottom: 10,
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  logo: {
+    width: 120,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  menuIcon: {
+    padding: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#5e412f',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  movieGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    backgroundColor: '#A3966A',
+    marginTop: 10,
+    paddingTop: 20,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 20,
+  },
+  movieCard: {
+    width: 100,
+    marginBottom: 10,
+    backgroundColor: '#482e1d',
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#f0daae',
+    alignItems: 'center',
+  },
+  moviePoster: {
+    width: '100%',
+    height: 140,
+    resizeMode: 'cover',
+  },
+  movieTitle: {
+    color: '#F0daae',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 5,
+    marginBottom: 5,
+    maxWidth: '100%',
+  },
+  noPoster: {
+    width: '100%',
+    height: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ccc',
+  },
+  noPosterText: {
+    color: '#333',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 5, 0, 0.1)',
+  },
+  modalContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 300,
+    padding: 20,
+    backgroundColor: '#f0daae',
+    borderRadius: 10,
+  },
+  menuOption: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: '#482e1d',
+  },
+});
 
 /*import React, { useState, useEffect } from 'react';
 import { 
@@ -224,101 +333,3 @@ export default function Home({ navigation }) {
     </View>
   );
 }*/
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F0daae',
-  },
-  navbar: {
-    paddingTop: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#a3966a',
-    paddingBottom: 10,
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40, 
-  },
-  logo: {
-    width: 120,
-    height: 50,
-    resizeMode: 'contain',
-  },
-  menuIcon: {
-    padding: 10,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#5e412f',
-    marginHorizontal: 20,
-    marginVertical: 10,
-  },
-  movieGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 20,
-    backgroundColor: '#A3966A',
-    marginTop: 10,
-    paddingTop: 20,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 20,
-  },
-  movieCard: {
-    width: 100,
-    marginBottom: 10,
-    backgroundColor: '#482e1d',
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: '#f0daae',
-    alignItems: 'center',
-  },
-  moviePoster: {
-    width: '100%',
-    height: 140,
-    resizeMode: 'cover',
-  },
-  movieTitle: {
-    color: '#F0daae',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 5,
-    marginBottom: 5,
-    maxWidth: '100%',
-  },
-  noPoster: {
-    width: '100%',
-    height: 140,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ccc',
-  },
-  noPosterText: {
-    color: '#333',
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 5, 0, 0.1)',
-  },
-  modalContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 300,
-    padding: 20,
-    backgroundColor: '#f0daae',
-    borderRadius: 10,
-  },
-  menuOption: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    color: '#482e1d',
-  },
-});
