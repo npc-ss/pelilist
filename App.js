@@ -17,6 +17,8 @@ import { ScrollView } from 'react-native';
 import { useEffect, useState } from "react";
 import SplashScreen from './pantallas/SplashScreenView';
 import MovieDetailsScreen from './pantallas/MovieDetailsScreen';
+import { auth } from './credenciales';
+import { onAuthStateChanged } from "firebase/auth";
 
 const AuthStack = createNativeStackNavigator(); // Define AuthStack here
 const Tab = createBottomTabNavigator();
