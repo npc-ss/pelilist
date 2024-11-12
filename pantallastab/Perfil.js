@@ -8,23 +8,23 @@ const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 const Perfil = () => {
   const navigation = useNavigation();
-  const [user, setUser] = useState(null);
+  const [user, setUser ] = useState(null);
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
+    const currentUser  = auth.currentUser ;
+    if (currentUser ) {
       // Obtener datos del usuario
-      const unsubscribeUser = onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
+      const unsubscribeUser  = onSnapshot(doc(db, 'users', currentUser .uid), (doc) => {
         if (doc.exists()) {
-          setUser(doc.data());
+          setUser (doc.data());
         }
       });
 
       // Obtener favoritos del usuario
       const q = query(
         collection(db, 'favoritos'),
-        where('userId', '==', currentUser.uid)
+        where('userId', '==', currentUser .uid)
       );
 
       const unsubscribeFavorites = onSnapshot(q, (snapshot) => {
@@ -33,7 +33,7 @@ const Perfil = () => {
       });
 
       return () => {
-        unsubscribeUser();
+        unsubscribeUser ();
         unsubscribeFavorites();
       };
     }
@@ -45,7 +45,7 @@ const Perfil = () => {
         <View style={styles.header}>
           <Image 
             style={styles.avatar} 
-            source={{ uri: 'https://acortar.link/t38bDl' }} 
+            source={{ uri: user ? user.profilePictures : 'https://default-image-url.com/default.jpg' }} // Update to use profilePictures
           />
           <Text style={styles.name}>
             {user && user.username ? user.username : "Cargando..."}
@@ -86,7 +86,7 @@ export default Perfil;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex : 1,
     backgroundColor: '#F0DAAE',
     paddingTop: 80,
   },
