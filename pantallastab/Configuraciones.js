@@ -103,14 +103,6 @@ export default function Configuraciones() {
         <Image source={{ uri: image }} style={styles.profilePictures} />
       )}
   
-      <Text style={styles.label}>Edad</Text>
-      <TextInput
-        style={styles.input}
-        value={age}
-        onChangeText={text => setAge(text)}
-        keyboardType='numeric'
-        maxLength={3}
-      />
   
       <Text style={styles.label}>Descripción</Text>
       <TextInput
@@ -136,25 +128,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0DAAE',
   },
   title: {
+    paddingTop: 40,
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#482E1D',
     borderWidth: 1,
     marginBottom: 15,
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#482E1D',
     padding: 10,
     alignItems: 'center',
     marginVertical: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: '#f0DAAE',
     fontSize: 16,
   },
   profilePictures: {
@@ -164,7 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   changePhotoText: {
-    color: '#007BFF',
+    color: '#482e1d',
     marginBottom: 10,
   },
   label: {
@@ -173,7 +166,7 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
-    borderColor: '#ccc',
+    borderColor: '#482E1D',
     borderWidth: 1,
     marginBottom: 15,
     paddingHorizontal: 10,
