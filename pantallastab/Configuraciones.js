@@ -33,7 +33,7 @@ export default function Configuraciones() {
         unsubscribeUser ();
       };
     } else {
-      console.warn('No user is currently logged in');
+      console.warn('No se encontro algun usuario logeado en este momento');
     }
   }, [currentUser ]);
 
