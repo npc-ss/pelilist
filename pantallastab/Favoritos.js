@@ -10,8 +10,8 @@ const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500'; 
 
-const Favoritos = () => {
-  const [favorites, setFavorites] = useState([]);
+const Favorites = () => {
+  const [favorites, setfavorites] = useState([]);
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
@@ -25,8 +25,8 @@ const Favoritos = () => {
       );
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const fetchedFavorites = snapshot.docs.map((doc) => doc.data());
-        setFavorites(fetchedFavorites);
+        const fetchedfavorites = snapshot.docs.map((doc) => doc.data());
+        setfavorites(fetchedfavorites);
       });
 
       return () => unsubscribe(); 
@@ -35,16 +35,16 @@ const Favoritos = () => {
 
   useEffect(() => {
     if (favorites.length > 0) {
-      fetchMoviesByFavorite();
+      fetchMoviesByfavorites();
     }
   }, [favorites]);
 
-  const fetchMoviesByFavorite = async () => {
+  const fetchMoviesByfavorites = async () => {
     setError(null); // Reset error state
 
     try {
-      const moviePromises = favorites.map(favorite => 
-        axios.get(`${BASE_URL}/movie/${favorite.movieId}?api_key=${API_KEY}&language=es-ES`)
+      const moviePromises = favorites.map(favorites => 
+        axios.get(`${BASE_URL}/movie/${favorites.movieId}?api_key=${API_KEY}&language=es-ES`)
       );
 
       const responses = await Promise.all(moviePromises);
@@ -56,7 +56,7 @@ const Favoritos = () => {
     }
   };
 
-  const renderFavorite = ({ item }) => (
+  const renderfavorites = ({ item }) => (
     <TouchableOpacity
       onPress={() => navigation.navigate('MovieDetailsScreen', { movie: item })} 
     >
@@ -81,13 +81,13 @@ const Favoritos = () => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Icon name="heart" size={25} color={'#482e1d'} />
-        <Text style={styles.sectionTitle}>Favoritos</Text>
+        <Icon name="time-outline" size={25} color={'#482e1d'} />
+        <Text style={styles.sectionTitle}>favorites</Text>
       </View>
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={renderFavorite}
+        renderItem={renderfavorites}
         numColumns={2}
         contentContainerStyle={styles.grid}
       />
@@ -95,7 +95,7 @@ const Favoritos = () => {
   );
 };
 
-export default Favoritos;
+export default Favorites;
 
 const styles = StyleSheet.create({
   container: {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   poster: {
     width: 150,
     height: 225,
-    maxWidth: 150, 
+    maxWidth: 150,
     borderRadius: 10,
     marginBottom: 10,
     borderColor: '#482e1d',
