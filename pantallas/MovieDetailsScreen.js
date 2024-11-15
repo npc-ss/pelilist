@@ -50,28 +50,29 @@ const MovieDetailsScreen = ({ route }) => {
     const user = auth.currentUser;
     if (user && comment.trim()) {
       try {
-        
         const userDocRef = doc(db, 'users', user.uid); 
         const userDoc = await getDoc(userDocRef);
-
+  
         if (userDoc.exists()) {
           const username = userDoc.data().username;
-
+  
           await addDoc(collection(db, 'comments'), {
             username: username, 
             userId: user.uid,
             movieId: movie.id,
             text: comment,
+            rating: rating, // Guardar la puntuación junto con el comentario
             timestamp: new Date()
           });
-
-          setComment(''); 
+  
+          setComment(''); // Limpiar el campo de comentario después de enviarlo
+          setRating(0); // Reiniciar la puntuación después de enviarla
         }
       } catch (error) {
         console.error('Error al agregar comentario:', error);
       }
     }
-  };
+  };  
 
   const handleDeleteComment = async (commentId) => {
     try {
@@ -194,7 +195,7 @@ const MovieDetailsScreen = ({ route }) => {
       <View style={styles.ratingSection}>
         <Text style={styles.sectionTitle}>Puntuación</Text>
         <View style={styles.rating}>
-          <Text style={styles.ratingText}>{rating}/10</Text>
+          <Text style={styles.ratingText2}>{rating}/10</Text>
           <TouchableOpacity onPress={() => handleRating(rating + 1)}>
             <Icon name="star" size={30} color="#FFD700" />
           </TouchableOpacity>
@@ -204,20 +205,22 @@ const MovieDetailsScreen = ({ route }) => {
       <View style={styles.commentsSection}>
   <Text style={styles.sectionTitle}>Comentarios</Text>
   {comments.length > 0 ? (
-    comments.map((c) => (
-      <View key={c.id} style={styles.commentContainer}>
-        <Text style={styles.sectionTitle}>{c.username || 'Usuario Anónimo'}</Text>
-        <Text style={styles.comment}>{c.text || 'Comentario vacío'}</Text>
-        {auth.currentUser  && auth.currentUser .uid === c.userId && (
-          <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
-            <Icon name="trash" size={20} color="#5e412f" />
-          </TouchableOpacity>
-        )}
-      </View>
-    ))
-  ) : (
-    <Text>No hay comentarios.</Text> // Handle empty comments
-  )}
+  comments.map((c) => (
+    <View key={c.id} style={styles.commentContainer}>
+      <Text style={styles.sectionName}>{c.username || 'Usuario Anónimo'}</Text>
+      <Text style={styles.comment}>{c.text || 'Comentario vacío'}</Text>
+      <Text style={styles.ratingText}>Puntuación: {c.rating}/10</Text> {/* Mostrar la puntuación */}
+      {auth.currentUser && auth.currentUser.uid === c.userId && (
+        <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
+          <Icon name="trash" size={20} color="#5e412f" />
+        </TouchableOpacity>
+      )}
+    </View>
+  ))
+) : (
+  <Text>No hay comentarios.</Text>
+)}
+
   <TextInput
     style={styles.commentInput}
     placeholder="Escribe tu opinión..."
@@ -278,7 +281,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     padding: 10,
     backgroundColor: '#a3966a',
     borderRadius: 5,
@@ -294,15 +297,29 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   rating: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   ratingText: {
-    fontSize: 16,
+    fontSize: 13,
     marginRight: 10,
+    marginBottom: 5,
+    backgroundColor: '#a3966a',
+    borderRadius: 5,
+    width: 105,
+    textAlign: 'center',
+  },
+  ratingText2:{
+    fontSize: 20,
+    marginRight: 10,
+    marginBottom: 5,
+    backgroundColor: '#a3966a',
+    borderRadius: 5,
+    width: 50,
+    textAlign: 'center',
   },
   commentsSection: {
     marginBottom: 20,
@@ -319,6 +336,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
+    marginTop: 15,
   },
   commentButton: {
     backgroundColor: '#5e412f',
@@ -336,4 +354,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 80,
   },
+  sectionName: {
+    fontSize: 15,
+    fontWeight: 'normal',
+    marginBottom: 5,
+  }
 });
