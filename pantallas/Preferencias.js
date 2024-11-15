@@ -20,18 +20,18 @@ const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const MovieGenresScreen = () => {
-  const navigation = useNavigation(); // Inicializa el objeto de navegación.
-  const [genres, setGenres] = useState([]); // Estado para almacenar los géneros de películas.
-  const [selectedGenres, setSelectedGenres] = useState([]); // Estado para almacenar los géneros seleccionados por el usuario.
-  const [loading, setLoading] = useState(true); // Estado para controlar la carga de datos.
-  const [moviesByGenre, setMoviesByGenre] = useState({}); // Estado para almacenar las películas por género.
-  const [error, setError] = useState(null); // Estado para manejar errores.
+  const navigation = useNavigation();
+  const [genres, setGenres] = useState([]); 
+  const [selectedGenres, setSelectedGenres] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [moviesByGenre, setMoviesByGenre] = useState({}); 
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchGenres(); 
       await checkUserGenres(); 
-      setLoading(false); // Establece loading en false solo después de ambas operaciones.
+      setLoading(false); 
     };
   
     fetchData();
@@ -39,14 +39,13 @@ const MovieGenresScreen = () => {
 
   const fetchGenres = async () => {
     try {
-      // Realiza una solicitud a la API para obtener la lista de géneros de películas.
       const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=es-ES`);
-      const data = await response.json(); // Convierte la respuesta a JSON.
+      const data = await response.json(); 
       if (!response.ok) {
         throw new Error(data.status_message); 
       }
-      setGenres(data.genres); // Establece los géneros en el estado.
-      await fetchMoviesForGenres(data.genres); // Llama a la función para obtener películas por género.
+      setGenres(data.genres); 
+      await fetchMoviesForGenres(data.genres); 
     } catch (error) {
       console.error('Error fetching genres:', error);
       setError('Failed to load genres. Please try again later.'); 
@@ -61,18 +60,18 @@ const MovieGenresScreen = () => {
         if (!response.ok) {
           throw new Error(data.status_message);
         }
-        return { ...genre, movies: data.results }; // Devuelve el género con las películas obtenidas.
+        return { ...genre, movies: data.results }; 
       } catch (error) {
         console.error(`Error fetching movies for genre ${genre.name}:`, error.message); 
         return { ...genre, movies: [] };
       }
     });
 
-    const moviesByGenreData = await Promise.allSettled(moviesPromises); // Espera a que todas las promesas se resuelvan.
+    const moviesByGenreData = await Promise.allSettled(moviesPromises); 
     const moviesByGenreMap = moviesByGenreData.reduce((acc, result) => {
-      if (result.status === 'fulfilled') { // Solo procesa los resultados que se resolvieron correctamente.
+      if (result.status === 'fulfilled') { 
         const genre = result.value;
-        acc[genre.id] = genre.movies; // Asocia el ID del género con las películas obtenidas.
+        acc[genre.id] = genre.movies; 
       }
       return acc; 
     }, {});
@@ -81,14 +80,13 @@ const MovieGenresScreen = () => {
   };
 
   const checkUserGenres = async () => {
-    const user = auth.currentUser ; // Obtiene el usuario autenticado.
+    const user = auth.currentUser ; 
     if (user) {
-      const docRef = doc(db, 'userGenres', user.uid); // Referencia al documento de géneros del usuario.
+      const docRef = doc(db, 'userGenres', user.uid); 
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        // Si el documento existe, carga los géneros.
         const data = docSnap.data();
-        setSelectedGenres(data.genres); // Establece los géneros seleccionados en el estado.
+        setSelectedGenres(data.genres); 
         navigation.replace('MainTabs');
       }
     }
@@ -106,10 +104,10 @@ const MovieGenresScreen = () => {
   const handleSaveGenres = async () => {
     if (selectedGenres.length === 5) { 
       try {
-        const user = auth.currentUser ; // Obtiene el usuario autenticado.
+        const user = auth.currentUser ; 
         if (user) {
           await setDoc(doc(db, 'userGenres', user.uid), {
-            genres: selectedGenres, // Guarda los géneros seleccionados en Firestore.
+            genres: selectedGenres, 
           });
         }
         navigation.replace('MainTabs'); 
@@ -129,7 +127,7 @@ const MovieGenresScreen = () => {
         <TouchableOpacity onPress={() => handleSelectGenre(item)}>
           <Card containerStyle={[styles.card, isSelected && styles.selectedCard]}>
             <Card.Title>
-              <Text>{item.name || 'Género Desconocido'}</Text> {/* Asegura que item.name siempre sea texto */}
+              <Text>{item.name || 'Género Desconocido'}</Text> 
             </Card.Title>
             <Card.Divider />
             <View style={styles.posterContainer}>

@@ -12,8 +12,8 @@ const MovieDetailsScreen = ({ route }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [liked, setLiked] = useState(false);
-  const [inWatchlist, setInWatchlist] = useState(false); // Estado separado para watchlist
-  const [user, setUser] = useState(null); // Para almacenar los datos del usuario
+  const [inWatchlist, setInWatchlist] = useState(false); 
+  const [user, setUser] = useState(null); 
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -61,12 +61,12 @@ const MovieDetailsScreen = ({ route }) => {
             userId: user.uid,
             movieId: movie.id,
             text: comment,
-            rating: rating, // Guardar la puntuación junto con el comentario
+            rating: rating, 
             timestamp: new Date()
           });
   
-          setComment(''); // Limpiar el campo de comentario después de enviarlo
-          setRating(0); // Reiniciar la puntuación después de enviarla
+          setComment('');
+          setRating(0); 
         }
       } catch (error) {
         console.error('Error al agregar comentario:', error);

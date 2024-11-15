@@ -37,7 +37,6 @@ function AuthStackScreen() {
   );
 }
 
-// Bottom Tabs después de autenticación
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -79,10 +78,9 @@ function MainTabs() {
   );
 }
 
-// Combinación de Stack y Bottom Tabs
 
 function isAut() {
-  const isAuthenticated = false; // Cambia esto según tu lógica de autenticación
+  const isAuthenticated = false; 
 
   return (
     <NavigationContainer>

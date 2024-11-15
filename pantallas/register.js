@@ -9,14 +9,14 @@ const logoImage = require('../assets/sobre.png');
 const wubiLogo = require('../assets/Wubi_logo3.png');
 const candadoImage = require('../assets/candado.png');
 
-import appFirebase, { db } from '../credenciales'; // Asegúrate de importar db
+import appFirebase, { db } from '../credenciales';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore'; // Importar funciones de Firestore
+import { setDoc, doc } from 'firebase/firestore'; 
 
 const auth = getAuth(appFirebase);
 
 function Register() {
-    const [username, setUsername] = useState(''); // Estado para el nombre de usuario
+    const [username, setUsername] = useState(''); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -24,13 +24,12 @@ function Register() {
 
     const registro = async () => {
         try {
-            // Crear usuario con email y contraseña
+            
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Guardar el nombre de usuario en Firestore
             await setDoc(doc(db, 'users', user.uid), {
-                username: username, // Nombre de usuario ingresado
+                username: username,
                 email: email,
                 createdAt: new Date(),
             });

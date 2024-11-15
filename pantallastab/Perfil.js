@@ -14,14 +14,13 @@ const Perfil = () => {
   useEffect(() => {
     const currentUser  = auth.currentUser ;
     if (currentUser ) {
-      // Obtener datos del usuario
+      
       const unsubscribeUser  = onSnapshot(doc(db, 'users', currentUser .uid), (doc) => {
         if (doc.exists()) {
           setUser (doc.data());
         }
       });
 
-      // Obtener favoritos del usuario
       const q = query(
         collection(db, 'favoritos'),
         where('userId', '==', currentUser .uid)
@@ -56,7 +55,7 @@ const Perfil = () => {
             </Text>
           ) : null}
 
-          {/* Botón de Configuraciones */}
+        
           <TouchableOpacity 
             style={styles.configButton} 
             onPress={() => navigation.navigate('Configuraciones')}
@@ -64,7 +63,7 @@ const Perfil = () => {
             <Text style={styles.configButtonText}>Configuraciones</Text>
           </TouchableOpacity>
 
-          {/* Mostrar películas favoritas */}
+        
           <Text style={styles.sectionTitle}>Favoritas</Text>
           <View style={styles.highlightGrid}>
             {favorites.slice(0, 6).map((movie, index) => (

@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
         zIndex: 1,
-        paddingBottom: 10,
     },
     iconInsideInput2: {
         position: 'absolute', 

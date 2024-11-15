@@ -53,12 +53,10 @@ export default function Home({ navigation, profileImage }) {
 
   return (
     <View style={styles.container}>
-      {/* Profile Image */}
       {profileImage && (
         <Image source={{ uri: profileImage }} style={styles.profileImage} />
       )}
 
-      {/* Navbar */}
       <ScrollView>
         <View style={styles.navbar}>
           <Image source={wubiLogo} style={styles.logo} />
@@ -84,12 +82,12 @@ export default function Home({ navigation, profileImage }) {
           </TouchableOpacity>
         </Modal>
 
-        {/* Search Bar */}
+        
         <View>
           <FormSearch onSearchResults={handleSearchResults} />
         </View>
 
-        {/* Conditional Display */}
+        
         <Text style={styles.sectionTitle}>
           {movies.length > 0 ? 'Resultados de la búsqueda' : 'Recomendaciones del mes'}
         </Text>
