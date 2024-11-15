@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';  
 import {
   View,
   Text,
@@ -9,21 +9,21 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native'; 
-import { useNavigation } from '@react-navigation/native'; // Importa el hook para la navegación.
+import { useNavigation } from '@react-navigation/native';
 
 const API_KEY = 'b2003f3925acf5cd85862955fc85e7b6'; 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const ModalGeneros = ({ route }) => {
-  const { genre } = route.params; // Recibe el género seleccionado a través de la ruta de navegación.
+  const { genre } = route.params;
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetchMoviesByGenre(genre.id); // Llama a la función para obtener películas del género seleccionado.
-  }, [genre]); // Se ejecuta cada vez que el género cambia.
+    fetchMoviesByGenre(genre.id);
+  }, [genre]);
 
   const fetchMoviesByGenre = async (genreId) => {
     try {
@@ -32,12 +32,12 @@ const ModalGeneros = ({ route }) => {
       if (!response.ok) {
         throw new Error(data.status_message); 
       }
-      setMovies(data.results); // Establece las películas obtenidas en el estado.
+      setMovies(data.results);
     } catch (error) {
       console.error('Error fetching movies:', error);
-      setError('Failed to load movies. Please try again later.'); 
+      setError('Failed to load movies. Please try again later.');
     } finally {
-      setLoading(false); // Establece loading en false al finalizar la operación.
+      setLoading(false);
     }
   };
 
@@ -52,7 +52,7 @@ const ModalGeneros = ({ route }) => {
             style={styles.moviePoster}
           />
         ) : (
-          <View style={styles.noPoster}> {/* Muestra un contenedor si no hay imagen disponible. */}
+          <View style={styles.noPoster}>
             <Text style={styles.noPosterText}>No Image</Text> 
           </View>
         )}
@@ -62,7 +62,7 @@ const ModalGeneros = ({ route }) => {
   );
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />; 
+    return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
   }
 
   if (error) {
@@ -77,11 +77,11 @@ const ModalGeneros = ({ route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Películas de {genre.name}</Text> 
       <FlatList
-        data={movies} // Lista de películas.
-        renderItem={renderItem} // Función para renderizar cada elemento.
-        keyExtractor={(item) => item.id.toString()} // Clave única para cada elemento.
-        numColumns={3} // Número de columnas en la cuadrícula de películas.
-        contentContainerStyle={styles.movieGrid} // Estilo del contenedor de la cuadrícula.
+        data={movies}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={3}
+        contentContainerStyle={styles.movieGrid}
       />
     </View>
   );
@@ -91,8 +91,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0daae', 
-    padding: 20, 
+    padding: 5, 
     alignItems: 'center',
+    paddingTop: 50,
   },
   title: {
     fontSize: 24, 
@@ -101,38 +102,38 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   movieGrid: {
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
   movieCard: {
-    width: '100%', 
-    marginBottom: 10, 
+    width: 110,
+    marginBottom: 10,
+    paddingTop: 3, 
+    marginHorizontal: 5, // Espacio horizontal entre posters.
     backgroundColor: '#482e1d',
-    borderRadius: 5, 
+    borderRadius: 14,
     borderWidth: 2, 
-    borderColor: '#f0daae', 
+    borderColor: '#f0daae',
     alignItems: 'center', 
   },
   moviePoster: {
     width: 100, 
-    maxWidth: 100, 
     height: 140, 
     resizeMode: 'cover', 
+    borderRadius: 10,
   },
   movieTitle: {
-    color: '#F0daae', 
-    fontWeight: 'bold', 
-    textAlign: 'center', 
+    color: '#F0daae',
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginTop: 5, 
-    marginBottom: 5, 
-    maxWidth: 100, 
+    marginBottom: 5,  
   },
   noPoster: {
     width: 100,
-    maxWidth: 100,
     height: 140,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ccc', 
+    backgroundColor: '#a3966a', 
   },
   noPosterText: {
     color: '#333',

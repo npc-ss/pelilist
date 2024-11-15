@@ -165,6 +165,7 @@ const styles = StyleSheet.create ({
     marginHorizontal: 20,
     backgroundColor: '#A3966A',
     marginTop: 10,
+    marginBottom: 20,
     paddingTop: 20,
     paddingBottom: 10,
     paddingLeft: 20,
@@ -175,7 +176,7 @@ const styles = StyleSheet.create ({
     width: 100,
     marginBottom: 10,
     backgroundColor: '#482e1d',
-    borderRadius: 5,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: '#f0daae',
     alignItems: 'center',
@@ -184,6 +185,7 @@ const styles = StyleSheet.create ({
     width: '100%',
     height: 140,
     resizeMode: 'cover',
+    borderRadius: 10,
   },
   movieTitle: {
     color: '#F0daae',
@@ -198,7 +200,8 @@ const styles = StyleSheet.create ({
     height: 140,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ccc',
+    backgroundColor: '#a3966a',
+    borderRadius:10,
   },
   noPosterText: {
     color: '#333',
@@ -224,112 +227,3 @@ const styles = StyleSheet.create ({
     color: '#482e1d',
   },
 });
-
-/*import React, { useState, useEffect } from 'react';
-import { 
-  View, Text, StyleSheet, Image, 
-  TouchableOpacity, Modal, ScrollView 
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import FormSearch from '../componente/FormSearch';
-import { db, auth } from '../credenciales';
-import { doc, getDoc } from 'firebase/firestore';
-
-const wubiLogo = require('../assets/Wubi_logo3.png');
-
-export default function Home({ navigation }) {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [movies, setMovies] = useState([]);
-  const [selectedGenres, setSelectedGenres] = useState([]);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-
-  const handleSearchResults = (searchResults) => {
-    setMovies(searchResults);
-  };
-
-  
-  const fetchUser = async () => { 
-    const user = auth.currentUser ;
-    if (user) {
-      const docRef = doc(db, 'userGenres', user.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setSelectedGenres(data.genres); // Cargar géneros seleccionados
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchUser(); 
-  }, []);
-
-  const handleGenreSelect = (genre) => {
-    navigation.navigate('modalGeneros', { genre }); // Navegar a la pantalla de detalles del género
-    toggleModal(); // Cerrar el modal
-  };
-
-  return (
-    <View style={styles.container}>
-      
-      <ScrollView>
-        <View style={styles.navbar}>
-          <Image source={wubiLogo} style={styles.logo} />
-          <TouchableOpacity style={styles.menuButton} onPress={toggleModal}>
-            <Icon name="menu" size={30} color="#F0DAAE" style={styles.menuIcon} />
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          visible={isModalVisible}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={toggleModal}
-        >
-          <TouchableOpacity style={styles.modalBackground} onPress={toggleModal}>
-            <View style={styles.modalContent}>
-              {selectedGenres.map((genre) => (
-                <TouchableOpacity key={genre.id} onPress={() => handleGenreSelect(genre)}>
-                  <Text style={styles.menuOption}>{genre.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </TouchableOpacity>
-        </Modal>
-
-        
-        <View>
-          <FormSearch onSearchResults={handleSearchResults} />
-        </View>
-
-        
-        <Text style={styles.sectionTitle}>Resultados de la búsqueda</Text>
-        <View style={styles.movieGrid}>
-          {movies.map((movie) => (
-            <TouchableOpacity
-              key={movie.id} // Cambiado de imdbID a id
-              onPress={() => navigation.navigate('MovieDetailsScreen', { movie })}
-            >
-              <View style={styles.movieCard}>
-                {movie.poster_path ? (
-                  <Image 
-                    source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }} 
-                    style={styles.moviePoster} 
-                  />
-                ) : (
-                  <View style={styles.noPoster}>
-                    <Text style={styles.noPosterText}>No Image</Text>
-                  </View>
-                )}
-                <Text style={styles.movieTitle}>{movie.title}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
-  );
-}*/

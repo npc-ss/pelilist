@@ -45,9 +45,10 @@ function MainTabs() {
       tabBarStyle: {
         backgroundColor: '#f0daae', // Color de fondo del tab
         borderTopWidth: 0, // Elimina la línea superior del tab
-        height: 80, // Ajusta la altura
-        borderTopWidth: 1,
-        borderTopColor: '#a3966a',
+        height: 110, // Ajusta la altura
+        borderTopWidth: 3,
+        borderColor: '#482e1d',
+        paddingTop:10,
       },
       tabBarShowLabel: false, // Oculta los labels de los tabs
       tabBarActiveTintColor: '#482E1D', // Color activo (naranja)

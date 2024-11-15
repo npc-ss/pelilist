@@ -82,13 +82,13 @@ const Favorites = () => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Icon name="time-outline" size={25} color={'#482e1d'} />
-        <Text style={styles.sectionTitle}>favorites</Text>
+        <Text style={styles.sectionTitle}>Favoritos</Text>
       </View>
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderfavorites}
-        numColumns={2}
+        numColumns={3}
         contentContainerStyle={styles.grid}
       />
     </View>
@@ -101,34 +101,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0DAAE',
-    padding: 20,
+    padding: 20, // Reducido para ajustarse mejor
   },
   grid: {
     justifyContent: 'space-between',
+    paddingBottom: 20, // Espacio al final para evitar cortes
   },
   gridItem: {
     flex: 1,
-    margin: 5,
+    marginHorizontal: 5, // Espacio horizontal uniforme
+    marginVertical: 10, // Espacio vertical uniforme
     alignItems: 'center',
   },
   poster: {
-    width: 150,
-    height: 225,
-    maxWidth: 150,
+    width: 110, // Ajustado para tres columnas
+    height: 170, // Ajustado en proporción
     borderRadius: 10,
     marginBottom: 10,
     borderColor: '#482e1d',
-    borderWidth: 5,
+    borderWidth: 3,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14, // Ajustado para mantener el diseño limpio
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#482e1d',
     maxWidth: 100,
   },
   titleContainer: {
-    paddingTop: 30,
+    paddingTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 20,

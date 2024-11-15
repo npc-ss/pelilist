@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         borderColor: '#F0DAAE',
         width: '70%',
-        height: 38,
+        height: 45,
         backgroundColor: '#aba073',
         color: '#F0DAAE',
         marginVertical: 10, 

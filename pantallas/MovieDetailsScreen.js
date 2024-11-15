@@ -30,7 +30,6 @@ const MovieDetailsScreen = ({ route }) => {
     fetchComments();
   }, [movie.id]);
 
-  // Obtener los datos del usuario actual
   useEffect(() => {
     const currentUser = auth.currentUser;
     if (currentUser) {
@@ -51,23 +50,22 @@ const MovieDetailsScreen = ({ route }) => {
     const user = auth.currentUser;
     if (user && comment.trim()) {
       try {
-        // Obtener el username del usuario actual desde Firestore
-        const userDocRef = doc(db, 'users', user.uid); // Ajusta el path si es diferente
+        
+        const userDocRef = doc(db, 'users', user.uid); 
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
           const username = userDoc.data().username;
 
-          // Guarda el comentario junto con el username
           await addDoc(collection(db, 'comments'), {
-            username: username, // Agregar el nombre de usuario aquí
+            username: username, 
             userId: user.uid,
             movieId: movie.id,
             text: comment,
             timestamp: new Date()
           });
 
-          setComment(''); // Limpiar el campo de comentario
+          setComment(''); 
         }
       } catch (error) {
         console.error('Error al agregar comentario:', error);
@@ -137,7 +135,7 @@ const MovieDetailsScreen = ({ route }) => {
           where('movieId', '==', movie.id)
         );
         const querySnapshot = await getDocs(q);
-        setInWatchlist(!querySnapshot.empty); // Usar estado inWatchlist
+        setInWatchlist(!querySnapshot.empty); 
       }
     };
     checkWatchlist();
@@ -259,7 +257,7 @@ const styles = StyleSheet.create({
     marginTop: 200,
     width: 200,
     height: 290,
-    borderRadius: 10,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: '#482e1d',
   },

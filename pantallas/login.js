@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         borderColor: '#F0DAAE',
         width: '70%',
-        height: 38,
+        height: 45,
         backgroundColor: '#aba073',
         color: '#F0DAAE',
         marginVertical: 10, 
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     image: {
+
         marginBottom: 10,
         height: 300,  
         width: 300,   
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
         zIndex: 1,
+        paddingBottom: 10,
     },
     iconInsideInput2: {
         position: 'absolute', 
